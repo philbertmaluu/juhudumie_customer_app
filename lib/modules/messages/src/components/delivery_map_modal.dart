@@ -117,6 +117,8 @@ class DeliveryMapModal extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
+
+                
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
