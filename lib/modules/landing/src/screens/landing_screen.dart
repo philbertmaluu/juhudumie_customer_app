@@ -20,6 +20,7 @@ class _LandingScreenState extends State<LandingScreen> {
   List<Product> _products = [];
   String _selectedCategory = 'All';
   bool _isLoading = false;
+  int _currentBottomNavIndex = 0;
 
   @override
   void initState() {
@@ -82,25 +83,74 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
+  /// Handle bottom navigation tap
+  void _onBottomNavTap(int index) {
+    setState(() {
+      _currentBottomNavIndex = index;
+    });
+
+    // Handle navigation based on selected tab
+    switch (index) {
+      case 0: // Home - already on landing page
+        break;
+      case 1: // Shops
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Shops feature coming soon!'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+        break;
+      case 2: // Messages
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Messages feature coming soon!'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+        break;
+      case 3: // Cart
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Cart feature coming soon!'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+        break;
+      case 4: // Profile
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Profile feature coming soon!'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor:
-          isDarkMode ? AppColors.darkBackground : AppColors.background,
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          // Custom sliver app bar
-          _buildSliverAppBar(),
+    return SliverAppBarModule.getFloatingBottomNavBar(
+      currentIndex: _currentBottomNavIndex,
+      onTap: _onBottomNavTap,
+      child: Scaffold(
+        backgroundColor:
+            isDarkMode ? AppColors.darkBackground : AppColors.background,
+        body: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            // Custom sliver app bar
+            _buildSliverAppBar(),
 
-          // Category filter
-          _buildCategoryFilter(),
+            // Category filter
+            _buildCategoryFilter(),
 
-          // Products grid
-          _buildProductsGrid(),
-        ],
+            // Products grid
+            _buildProductsGrid(),
+          ],
+        ),
       ),
     );
   }
@@ -247,7 +297,12 @@ class _LandingScreenState extends State<LandingScreen> {
     }
 
     return SliverPadding(
-      padding: AppSpacing.screenPaddingMd,
+      padding: EdgeInsets.only(
+        left: AppSpacing.md,
+        right: AppSpacing.md,
+        top: AppSpacing.md,
+        bottom: AppSpacing.md + 100, // Extra padding for floating nav bar
+      ),
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'components/custom_sliver_appbar.dart';
+import 'components/custom_bottom_navbar.dart';
 
 import 'services/sliver_appbar_service.dart';
 import 'models/promotion_data.dart';
@@ -31,8 +32,6 @@ class SliverAppBarModule {
       collapsedHeight: collapsedHeight,
     );
   }
-
-
 
   /// Get app bar configuration
   static SliverAppBarConfig get appBarConfig =>
@@ -66,5 +65,26 @@ class SliverAppBarModule {
   /// Get promotions by type
   static List<PromotionBanner> getPromotionsByType(PromotionType type) {
     return SliverAppBarService.getPromotionsByType(type);
+  }
+
+  /// Get custom bottom navigation bar
+  static Widget getCustomBottomNavBar({
+    required int currentIndex,
+    required Function(int) onTap,
+  }) {
+    return CustomBottomNavBar(currentIndex: currentIndex, onTap: onTap);
+  }
+
+  /// Get floating bottom navigation bar wrapper
+  static Widget getFloatingBottomNavBar({
+    required int currentIndex,
+    required Function(int) onTap,
+    required Widget child,
+  }) {
+    return FloatingBottomNavBar(
+      currentIndex: currentIndex,
+      onTap: onTap,
+      child: child,
+    );
   }
 }
