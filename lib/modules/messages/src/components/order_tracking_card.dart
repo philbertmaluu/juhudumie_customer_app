@@ -8,6 +8,7 @@ class OrderTrackingCard extends StatelessWidget {
   final bool isLatest;
   final VoidCallback? onCallDeliveryMan;
   final VoidCallback? onMessageDeliveryMan;
+  final VoidCallback? onTrackOnMap;
 
   const OrderTrackingCard({
     super.key,
@@ -15,6 +16,7 @@ class OrderTrackingCard extends StatelessWidget {
     this.isLatest = false,
     this.onCallDeliveryMan,
     this.onMessageDeliveryMan,
+    this.onTrackOnMap,
   });
 
   @override
@@ -131,6 +133,28 @@ class OrderTrackingCard extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ],
+
+          // Track on Map button (for orders in transit)
+          if (tracking.status.toLowerCase() == 'in transit' && isLatest) ...[
+            AppSpacing.gapVerticalSm,
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: onTrackOnMap,
+                icon: const Icon(Icons.map_outlined, size: 16),
+                label: const Text('Track on Map'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary.withOpacity(0.1),
+                  foregroundColor: AppColors.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(color: AppColors.primary.withOpacity(0.3)),
+                  ),
+                ),
+              ),
             ),
           ],
 

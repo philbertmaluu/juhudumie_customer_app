@@ -6,6 +6,7 @@ import '../models/message_data.dart';
 import '../services/message_service.dart';
 import '../components/conversation_card.dart';
 import '../components/order_tracking_card.dart';
+import '../components/delivery_map_modal.dart';
 
 /// Messages screen for customer-vendor communication and delivery tracking
 class MessagesScreen extends StatefulWidget {
@@ -130,6 +131,33 @@ class _MessagesScreenState extends State<MessagesScreen>
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
+    );
+  }
+
+  /// Show delivery map modal
+  void _showDeliveryMapModal(OrderTracking tracking) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder:
+          (context) => DeliveryMapModal(
+            tracking: tracking,
+            onCallDeliveryMan:
+                tracking.deliveryManPhone != null
+                    ? () {
+                      Navigator.of(context).pop();
+                      _onCallDeliveryMan(tracking.deliveryManPhone!);
+                    }
+                    : null,
+            onMessageDeliveryMan:
+                tracking.deliveryManId != null
+                    ? () {
+                      Navigator.of(context).pop();
+                      _onMessageDeliveryMan(tracking.deliveryManId!);
+                    }
+                    : null,
+          ),
     );
   }
 
@@ -334,6 +362,7 @@ class _MessagesScreenState extends State<MessagesScreen>
               tracking.deliveryManId != null
                   ? () => _onMessageDeliveryMan(tracking.deliveryManId!)
                   : null,
+          onTrackOnMap: () => _showDeliveryMapModal(tracking),
         );
       },
     );
