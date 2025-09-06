@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'colors.dart';
 import 'text_styles.dart';
+import 'button_theme.dart';
+import 'input_theme.dart';
+import 'navigation_theme.dart';
+import 'spacing.dart';
 
 /// Application theme configuration
 class AppTheme {
@@ -30,118 +33,36 @@ class AppTheme {
         onSurfaceVariant: AppColors.onSurfaceVariant,
       ),
 
-      // App bar theme
-      appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onPrimary,
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: AppTextStyles.headingMedium,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
+      // Component themes
+      appBarTheme: AppNavigationTheme.appBarTheme,
+      bottomNavigationBarTheme: AppNavigationTheme.bottomNavigationBarTheme,
+      drawerTheme: AppNavigationTheme.drawerTheme,
+      tabBarTheme: AppNavigationTheme.tabBarTheme,
+      navigationRailTheme: AppNavigationTheme.navigationRailTheme,
 
-      // Elevated button theme
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.onPrimary,
-          elevation: 2,
-          shadowColor: AppColors.shadow,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: AppTextStyles.buttonPrimary,
-        ),
-      ),
+      elevatedButtonTheme: AppButtonTheme.elevatedButtonTheme,
+      outlinedButtonTheme: AppButtonTheme.outlinedButtonTheme,
+      textButtonTheme: AppButtonTheme.textButtonTheme,
+      floatingActionButtonTheme: AppButtonTheme.floatingActionButtonTheme,
+      iconButtonTheme: AppButtonTheme.iconButtonTheme,
 
-      // Outlined button theme
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.primary,
-          side: const BorderSide(color: AppColors.primary, width: 1.5),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: AppTextStyles.buttonSecondary,
-        ),
-      ),
+      inputDecorationTheme: AppInputTheme.inputDecorationTheme,
 
-      // Text button theme
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: AppColors.primary,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          textStyle: AppTextStyles.buttonText,
-        ),
-      ),
-
-      // Input decoration theme
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: AppColors.surface,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.outline),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.outline),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.error),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.error, width: 2),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 12,
-        ),
-        labelStyle: AppTextStyles.labelMedium,
-        hintStyle: AppTextStyles.bodyMedium.copyWith(
-          color: AppColors.onSurfaceVariant,
-        ),
-      ),
-
-      // Bottom navigation bar theme
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.surface,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.onSurfaceVariant,
-        type: BottomNavigationBarType.fixed,
-        elevation: 8,
-      ),
-
-      // Floating action button theme
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onPrimary,
-        elevation: 4,
-      ),
-
-      // Divider theme
+      // Basic themes
       dividerTheme: const DividerThemeData(
         color: AppColors.outline,
         thickness: 1,
         space: 1,
       ),
-
-      // Icon theme
-      iconTheme: const IconThemeData(color: AppColors.onSurface, size: 24),
-
-      // Primary icon theme
+      iconTheme: const IconThemeData(
+        color: AppColors.onSurface,
+        size: AppSpacing.iconMd,
+      ),
       primaryIconTheme: const IconThemeData(
         color: AppColors.onPrimary,
-        size: 24,
+        size: AppSpacing.iconMd,
       ),
-
-      // Text theme
-      textTheme: const TextTheme(
+      textTheme: TextTheme(
         displayLarge: AppTextStyles.headingLarge,
         displayMedium: AppTextStyles.headingMedium,
         displaySmall: AppTextStyles.headingSmall,
@@ -161,7 +82,7 @@ class AppTheme {
     );
   }
 
-  /// Dark theme configuration (optional for future use)
+  /// Dark theme configuration
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
@@ -183,18 +104,36 @@ class AppTheme {
         onSurfaceVariant: Color(0xFFB0B0B0),
       ),
 
-      // App bar theme for dark mode
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFF1E1E1E),
-        foregroundColor: Color(0xFFE0E0E0),
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: AppTextStyles.headingMedium,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
+      // Component themes for dark mode
+      appBarTheme: AppNavigationTheme.appBarThemeDark,
+      bottomNavigationBarTheme: AppNavigationTheme.bottomNavigationBarThemeDark,
+      drawerTheme: AppNavigationTheme.drawerThemeDark,
+      tabBarTheme: AppNavigationTheme.tabBarThemeDark,
+      navigationRailTheme: AppNavigationTheme.navigationRailThemeDark,
 
-      // Text theme for dark mode
-      textTheme: const TextTheme(
+      elevatedButtonTheme: AppButtonTheme.elevatedButtonTheme,
+      outlinedButtonTheme: AppButtonTheme.outlinedButtonTheme,
+      textButtonTheme: AppButtonTheme.textButtonTheme,
+      floatingActionButtonTheme: AppButtonTheme.floatingActionButtonTheme,
+      iconButtonTheme: AppButtonTheme.iconButtonTheme,
+
+      inputDecorationTheme: AppInputTheme.inputDecorationTheme,
+
+      // Basic themes for dark mode
+      dividerTheme: const DividerThemeData(
+        color: Color(0xFF424242),
+        thickness: 1,
+        space: 1,
+      ),
+      iconTheme: const IconThemeData(
+        color: Color(0xFFE0E0E0),
+        size: AppSpacing.iconMd,
+      ),
+      primaryIconTheme: const IconThemeData(
+        color: AppColors.onPrimary,
+        size: AppSpacing.iconMd,
+      ),
+      textTheme: TextTheme(
         displayLarge: AppTextStyles.headingLarge,
         displayMedium: AppTextStyles.headingMedium,
         displaySmall: AppTextStyles.headingSmall,

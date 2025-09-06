@@ -71,8 +71,8 @@ class AppColors {
   /// Primary gradient for headers and banners
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [primary, secondary],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
   );
 
   /// Background gradient for subtle depth
