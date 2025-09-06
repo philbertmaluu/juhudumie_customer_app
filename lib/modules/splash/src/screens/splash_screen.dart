@@ -91,12 +91,13 @@ class _SplashScreenState extends State<SplashScreen>
       final shouldShowOnboarding =
           await OnboardingService.shouldShowOnboarding();
       if (shouldShowOnboarding) {
-        AppRouteManager.navigateToAndClearStack(
+        Navigator.of(
           context,
-          AppRouteManager.onboarding,
-        );
+        ).pushNamedAndRemoveUntil(AppRouteManager.onboarding, (route) => false);
       } else {
-        AppRouteManager.navigateToAndClearStack(context, AppRouteManager.home);
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(AppRouteManager.home, (route) => false);
       }
     }
   }

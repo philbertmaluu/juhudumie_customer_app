@@ -42,14 +42,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _skipOnboarding() async {
     await OnboardingService.skipOnboarding();
     if (mounted) {
-      AppRouteManager.navigateToAndClearStack(context, AppRouteManager.home);
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(AppRouteManager.home, (route) => false);
     }
   }
 
   void _completeOnboarding() async {
     await OnboardingService.completeOnboarding();
     if (mounted) {
-      AppRouteManager.navigateToAndClearStack(context, AppRouteManager.home);
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(AppRouteManager.home, (route) => false);
     }
   }
 

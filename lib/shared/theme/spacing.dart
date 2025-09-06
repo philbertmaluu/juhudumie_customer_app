@@ -164,6 +164,9 @@ class AppSpacing {
   static const EdgeInsets marginLg = EdgeInsets.all(lg);
 
   // --- GAP CONSTANTS ---
+  /// Extra small gap
+  static const SizedBox gapXs = SizedBox(height: xs, width: xs);
+
   /// Small gap
   static const SizedBox gapSm = SizedBox(height: sm, width: sm);
 
@@ -180,6 +183,9 @@ class AppSpacing {
   static const SizedBox gapXxl = SizedBox(height: xxl, width: xxl);
 
   // --- VERTICAL GAPS ---
+  /// Extra small vertical gap
+  static const SizedBox gapVerticalXs = SizedBox(height: xs);
+
   /// Small vertical gap
   static const SizedBox gapVerticalSm = SizedBox(height: sm);
 
@@ -196,6 +202,9 @@ class AppSpacing {
   static const SizedBox gapVerticalXxl = SizedBox(height: xxl);
 
   // --- HORIZONTAL GAPS ---
+  /// Extra small horizontal gap
+  static const SizedBox gapHorizontalXs = SizedBox(width: xs);
+
   /// Small horizontal gap
   static const SizedBox gapHorizontalSm = SizedBox(width: sm);
 

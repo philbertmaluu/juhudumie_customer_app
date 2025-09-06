@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../../shared/theme/index.dart';
 import '../models/promotion_data.dart';
 import '../services/sliver_appbar_service.dart';
+import '../../../landing/src/services/product_service.dart';
 
 /// Custom sliver app bar with promotions and app branding
 class CustomSliverAppBar extends StatelessWidget {
@@ -381,7 +382,7 @@ class CustomSliverAppBar extends StatelessWidget {
 
           // Categories horizontal scroll (Alibaba style - full width)
           SizedBox(
-            height: 100, // Increased height for bigger cards
+            height: 110, // Increased height for bigger cards with text
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(
@@ -395,7 +396,7 @@ class CustomSliverAppBar extends StatelessWidget {
                     // Handle category tap
                   },
                   child: Container(
-                    width: 85, // Increased width for bigger cards
+                    width: 90, // Increased width for bigger cards with text
                     margin: const EdgeInsets.only(right: 10),
                     decoration: BoxDecoration(
                       color: isDarkMode ? AppColors.darkSurface : Colors.white,
@@ -443,15 +444,15 @@ class CustomSliverAppBar extends StatelessWidget {
                         Text(
                           category['name'],
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             color:
                                 isDarkMode
                                     ? AppColors.onDarkSurface
-                                    : Colors.grey[700],
+                                    : Colors.black87,
                             fontWeight: FontWeight.w600,
                           ),
                           textAlign: TextAlign.center,
-                          maxLines: 1,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
@@ -468,16 +469,31 @@ class CustomSliverAppBar extends StatelessWidget {
 
   /// Get categories list
   List<Map<String, dynamic>> _getCategories() {
-    return [
-      {'name': 'Home', 'icon': Icons.home},
-      {'name': 'Electronics', 'icon': Icons.electrical_services},
-      {'name': 'Fashion', 'icon': Icons.checkroom},
-      {'name': 'Sports', 'icon': Icons.sports},
-      {'name': 'Books', 'icon': Icons.book},
-      {'name': 'Beauty', 'icon': Icons.face},
-      {'name': 'Toys', 'icon': Icons.toys},
-      {'name': 'Automotive', 'icon': Icons.directions_car},
-    ];
+    final productService = ProductService();
+    final categories = productService.getCategories();
+
+    // Map category names to appropriate icons
+    final iconMap = {
+      'Electronics': Icons.electrical_services,
+      'Fashion': Icons.checkroom,
+      'Home & Garden': Icons.home,
+      'Sports': Icons.sports,
+      'Books': Icons.book,
+      'Beauty': Icons.face,
+      'Toys': Icons.toys,
+      'Automotive': Icons.directions_car,
+      'Health': Icons.health_and_safety,
+      'Food': Icons.restaurant,
+    };
+
+    return categories
+        .map(
+          (category) => {
+            'name': category.name,
+            'icon': iconMap[category.name] ?? Icons.category,
+          },
+        )
+        .toList();
   }
 
   /// Build action button

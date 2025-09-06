@@ -12,9 +12,6 @@ class AppRouteManager {
   // Private constructor to prevent instantiation
   AppRouteManager._();
 
-  /// Initial route
-  static const String initialRoute = splash;
-
   /// Route names constants
   static const String splash = '/splash';
   static const String onboarding = '/onboarding';
@@ -196,20 +193,5 @@ class PlaceholderScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  /// Navigate to a route and clear the entire navigation stack
-  static void navigateToAndClearStack(BuildContext context, String routeName) {
-    Navigator.of(context).pushNamedAndRemoveUntil(routeName, (route) => false);
-  }
-
-  /// Navigate to a route
-  static void navigateTo(BuildContext context, String routeName) {
-    Navigator.of(context).pushNamed(routeName);
-  }
-
-  /// Navigate back
-  static void navigateBack(BuildContext context) {
-    Navigator.of(context).pop();
   }
 }
