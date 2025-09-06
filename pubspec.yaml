@@ -47,6 +47,12 @@ dependencies:
   # Provider for state management
   provider: ^6.1.1
 
+  # HTTP client for API calls
+  http: ^1.1.0
+
+  # Google Maps for Flutter
+  google_maps_flutter: ^2.5.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

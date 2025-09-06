@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../shared/theme/index.dart';
 import '../models/message_data.dart';
+import '../../../map/src/map_module.dart';
 
 /// Delivery map modal bottom sheet for order tracking
 class DeliveryMapModal extends StatelessWidget {
@@ -84,34 +85,25 @@ class DeliveryMapModal extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // Map placeholder
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.map_outlined, size: 48, color: AppColors.primary),
-                AppSpacing.gapVerticalSm,
-                Text(
-                  'Live Delivery Map',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color:
-                        isDarkMode
-                            ? AppColors.onDarkSurface
-                            : AppColors.onSurface,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  'Real-time location tracking',
-                  style: AppTextStyles.caption.copyWith(
-                    color:
-                        isDarkMode
-                            ? AppColors.onDarkSurface.withOpacity(0.7)
-                            : AppColors.onSurface.withOpacity(0.7),
-                  ),
-                ),
-              ],
+          // Map widget
+          MapWidget(
+            config: MapConfig(
+              initialLocation: const MapLocation(
+                latitude: -6.7924, // Dar es Salaam coordinates
+                longitude: 39.2083,
+                name: 'Dar es Salaam',
+                address: 'Dar es Salaam, Tanzania',
+              ),
+              showUserLocation: true,
+              showTraffic: true,
             ),
+            markers: _buildDeliveryMarkers(),
+            onLocationSelected: (location) {
+              // Handle location selection
+            },
+            onLocationChanged: (location) {
+              // Handle location change
+            },
           ),
 
           // Delivery man location indicator
@@ -150,6 +142,63 @@ class DeliveryMapModal extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// Build delivery markers
+  List<MapMarker> _buildDeliveryMarkers() {
+    final markers = <MapMarker>[];
+
+    // Sample pickup location marker (Dar es Salaam port area)
+    markers.add(
+      MapMarker(
+        id: 'pickup',
+        location: const MapLocation(
+          latitude: -6.8200,
+          longitude: 39.2800,
+          name: 'Pickup Location',
+          address: 'Port of Dar es Salaam',
+        ),
+        title: 'Pickup',
+        icon: Icons.store,
+        color: Colors.green,
+      ),
+    );
+
+    // Sample delivery location marker (City center)
+    markers.add(
+      MapMarker(
+        id: 'delivery',
+        location: const MapLocation(
+          latitude: -6.7924,
+          longitude: 39.2083,
+          name: 'Delivery Location',
+          address: 'Dar es Salaam City Center',
+        ),
+        title: 'Delivery',
+        icon: Icons.home,
+        color: Colors.blue,
+      ),
+    );
+
+    // Current delivery man location marker (if available)
+    if (tracking.deliveryManId != null) {
+      markers.add(
+        MapMarker(
+          id: 'current',
+          location: const MapLocation(
+            latitude: -6.8000,
+            longitude: 39.2500,
+            name: 'Current Location',
+            address: 'Delivery Man Location',
+          ),
+          title: 'Delivery Man',
+          icon: Icons.delivery_dining,
+          color: AppColors.primary,
+        ),
+      );
+    }
+
+    return markers;
   }
 
   /// Build action buttons
