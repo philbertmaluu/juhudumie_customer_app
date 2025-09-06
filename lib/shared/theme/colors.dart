@@ -89,6 +89,45 @@ class AppColors {
     end: Alignment.bottomRight,
   );
 
+  /// Dark mode primary gradient (blue to blackish gray)
+  static const LinearGradient darkPrimaryGradient = LinearGradient(
+    colors: [primary, Color(0xFF1A1A1A)],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
+  /// Dark mode background gradient
+  static const LinearGradient darkBackgroundGradient = LinearGradient(
+    colors: [darkBackground, Color(0xFF0A0A0A)],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
+  // --- DARK MODE COLORS ---
+  /// Dark background color
+  static const Color darkBackground = Color(0xFF121212);
+
+  /// Dark surface color
+  static const Color darkSurface = Color(0xFF1E1E1E);
+
+  /// Dark surface variant
+  static const Color darkSurfaceVariant = Color(0xFF2C2C2C);
+
+  /// Text color on dark background
+  static const Color onDarkBackground = Color(0xFFE0E0E0);
+
+  /// Text color on dark surface
+  static const Color onDarkSurface = Color(0xFFE0E0E0);
+
+  /// Secondary text color on dark surface
+  static const Color onDarkSurfaceVariant = Color(0xFFB0B0B0);
+
+  /// Dark outline color
+  static const Color darkOutline = Color(0xFF424242);
+
+  /// Dark outline variant
+  static const Color darkOutlineVariant = Color(0xFF616161);
+
   // --- SHADOWS ---
   /// Light shadow for subtle elevation
   static const Color shadow = Color(0x1A000000);
@@ -98,4 +137,7 @@ class AppColors {
 
   /// Dark shadow for high elevation
   static const Color shadowDark = Color(0x4D000000);
+
+  /// Dark mode shadow
+  static const Color darkShadow = Color(0x1AFFFFFF);
 }

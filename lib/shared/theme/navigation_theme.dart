@@ -25,8 +25,8 @@ class AppNavigationTheme {
   /// App bar theme for dark mode
   static AppBarTheme get appBarThemeDark {
     return AppBarTheme(
-      backgroundColor: const Color(0xFF1E1E1E),
-      foregroundColor: const Color(0xFFE0E0E0),
+      backgroundColor: AppColors.darkSurface,
+      foregroundColor: AppColors.onDarkSurface,
       elevation: 0,
       centerTitle: true,
       titleTextStyle: AppTextStyles.headingMedium,
@@ -51,9 +51,9 @@ class AppNavigationTheme {
   /// Bottom navigation bar theme for dark mode
   static BottomNavigationBarThemeData get bottomNavigationBarThemeDark {
     return BottomNavigationBarThemeData(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: AppColors.darkSurface,
       selectedItemColor: AppColors.secondary,
-      unselectedItemColor: const Color(0xFFB0B0B0),
+      unselectedItemColor: AppColors.onDarkSurfaceVariant,
       type: BottomNavigationBarType.fixed,
       elevation: AppSpacing.elevationVeryHigh,
       selectedLabelStyle: AppTextStyles.labelSmall,
@@ -78,7 +78,7 @@ class AppNavigationTheme {
   /// Drawer theme for dark mode
   static DrawerThemeData get drawerThemeDark {
     return const DrawerThemeData(
-      backgroundColor: Color(0xFF2C2C2C),
+      backgroundColor: AppColors.darkSurfaceVariant,
       elevation: AppSpacing.elevationHigh,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -106,7 +106,7 @@ class AppNavigationTheme {
   static TabBarTheme get tabBarThemeDark {
     return TabBarTheme(
       labelColor: AppColors.secondary,
-      unselectedLabelColor: const Color(0xFFB0B0B0),
+      unselectedLabelColor: AppColors.onDarkSurfaceVariant,
       indicator: const UnderlineTabIndicator(
         borderSide: BorderSide(color: AppColors.secondary, width: 2),
       ),
@@ -136,13 +136,13 @@ class AppNavigationTheme {
   /// Navigation rail theme for dark mode
   static NavigationRailThemeData get navigationRailThemeDark {
     return NavigationRailThemeData(
-      backgroundColor: const Color(0xFF2C2C2C),
+      backgroundColor: AppColors.darkSurfaceVariant,
       selectedIconTheme: const IconThemeData(
         color: AppColors.secondary,
         size: AppSpacing.iconMd,
       ),
       unselectedIconTheme: const IconThemeData(
-        color: Color(0xFFB0B0B0),
+        color: AppColors.onDarkSurfaceVariant,
         size: AppSpacing.iconMd,
       ),
       selectedLabelTextStyle: AppTextStyles.labelMedium,

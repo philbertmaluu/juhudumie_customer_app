@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../shared/theme/index.dart';
+import '../../../../shared/utilities/route_manager.dart';
 import '../services/splash_service.dart';
+import '../../../onboarding/src/services/onboarding_service.dart';
 
 /// Splash screen widget with gradient design and app initialization
 class SplashScreen extends StatefulWidget {
@@ -83,10 +85,19 @@ class _SplashScreenState extends State<SplashScreen>
     // Start fade out animation
     _fadeController.forward();
 
-    // Navigate to home after fade completes
+    // Navigate to appropriate screen after fade completes
     await Future.delayed(const Duration(milliseconds: 500));
     if (mounted) {
-      Navigator.of(context).pushReplacementNamed('/home');
+      final shouldShowOnboarding =
+          await OnboardingService.shouldShowOnboarding();
+      if (shouldShowOnboarding) {
+        AppRouteManager.navigateToAndClearStack(
+          context,
+          AppRouteManager.onboarding,
+        );
+      } else {
+        AppRouteManager.navigateToAndClearStack(context, AppRouteManager.home);
+      }
     }
   }
 
@@ -100,9 +111,16 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
+        decoration: BoxDecoration(
+          gradient:
+              isDarkMode
+                  ? AppColors.darkPrimaryGradient
+                  : AppColors.primaryGradient,
+        ),
         child: FadeTransition(
           opacity: _fadeAnimation,
           child: Center(
@@ -117,22 +135,61 @@ class _SplashScreenState extends State<SplashScreen>
                       scale: _logoScaleAnimation.value,
                       child: Transform.rotate(
                         angle: _logoRotationAnimation.value * 0.1,
-                        child: Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: AppColors.onPrimary.withOpacity(0.1),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.onPrimary.withOpacity(0.3),
-                              width: 2,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Loading indicator surrounding the logo
+                            FadeTransition(
+                              opacity: _textFadeAnimation,
+                              child: SizedBox(
+                                width: 140,
+                                height: 140,
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    isDarkMode
+                                        ? AppColors.onDarkSurface.withOpacity(
+                                          0.7,
+                                        )
+                                        : AppColors.onPrimary.withOpacity(0.7),
+                                  ),
+                                  strokeWidth: 2,
+                                ),
+                              ),
                             ),
-                          ),
-                          child: const Icon(
-                            Icons.shopping_bag,
-                            size: 60,
-                            color: AppColors.onPrimary,
-                          ),
+                            // Logo container
+                            Container(
+                              width: 120,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                color:
+                                    isDarkMode
+                                        ? AppColors.onDarkSurface.withOpacity(
+                                          0.1,
+                                        )
+                                        : AppColors.onPrimary.withOpacity(0.1),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color:
+                                      isDarkMode
+                                          ? AppColors.onDarkSurface.withOpacity(
+                                            0.3,
+                                          )
+                                          : AppColors.onPrimary.withOpacity(
+                                            0.3,
+                                          ),
+                                  width: 2,
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.shopping_bag,
+                                size: 60,
+                                color:
+                                    isDarkMode
+                                        ? AppColors.onDarkSurface
+                                        : AppColors.onPrimary,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -149,7 +206,10 @@ class _SplashScreenState extends State<SplashScreen>
                       Text(
                         'Jihudumie',
                         style: AppTextStyles.headingLarge.copyWith(
-                          color: AppColors.onPrimary,
+                          color:
+                              isDarkMode
+                                  ? AppColors.onDarkSurface
+                                  : AppColors.onPrimary,
                           letterSpacing: 1.2,
                         ),
                       ),
@@ -157,28 +217,14 @@ class _SplashScreenState extends State<SplashScreen>
                       Text(
                         'Your Shopping Companion',
                         style: AppTextStyles.bodyLarge.copyWith(
-                          color: AppColors.onPrimary.withOpacity(0.8),
+                          color:
+                              isDarkMode
+                                  ? AppColors.onDarkSurface.withOpacity(0.8)
+                                  : AppColors.onPrimary.withOpacity(0.8),
                           letterSpacing: 0.5,
                         ),
                       ),
                     ],
-                  ),
-                ),
-
-                AppSpacing.gapVerticalXxl,
-
-                // Loading indicator
-                FadeTransition(
-                  opacity: _textFadeAnimation,
-                  child: SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.onPrimary.withOpacity(0.7),
-                      ),
-                      strokeWidth: 3,
-                    ),
                   ),
                 ),
               ],

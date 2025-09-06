@@ -9,35 +9,22 @@ class AppTextStyles {
 
   // --- HEADING STYLES ---
   /// Large heading style for main titles
-  static TextStyle get headingLarge => GoogleFonts.inter(
-    fontSize: 32,
-    fontWeight: FontWeight.bold,
-    color: AppColors.onBackground,
-    height: 1.2,
-  );
+  static TextStyle get headingLarge =>
+      GoogleFonts.inter(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2);
 
   /// Medium heading style for section titles
-  static TextStyle get headingMedium => GoogleFonts.inter(
-    fontSize: 24,
-    fontWeight: FontWeight.w600,
-    color: AppColors.onBackground,
-    height: 1.3,
-  );
+  static TextStyle get headingMedium =>
+      GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w600, height: 1.3);
 
   /// Small heading style for subsection titles
-  static TextStyle get headingSmall => GoogleFonts.inter(
-    fontSize: 20,
-    fontWeight: FontWeight.w600,
-    color: AppColors.onBackground,
-    height: 1.3,
-  );
+  static TextStyle get headingSmall =>
+      GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w600, height: 1.3);
 
   // --- BODY TEXT STYLES ---
   /// Large body text for important content
   static TextStyle get bodyLarge => GoogleFonts.inter(
     fontSize: 16,
     fontWeight: FontWeight.normal,
-    color: AppColors.onBackground,
     height: 1.5,
   );
 
@@ -45,7 +32,6 @@ class AppTextStyles {
   static TextStyle get bodyMedium => GoogleFonts.inter(
     fontSize: 14,
     fontWeight: FontWeight.normal,
-    color: AppColors.onBackground,
     height: 1.4,
   );
 
@@ -53,34 +39,21 @@ class AppTextStyles {
   static TextStyle get bodySmall => GoogleFonts.inter(
     fontSize: 12,
     fontWeight: FontWeight.normal,
-    color: AppColors.onSurfaceVariant,
     height: 1.4,
   );
 
   // --- LABEL STYLES ---
   /// Large label for important labels
-  static TextStyle get labelLarge => GoogleFonts.inter(
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
-    color: AppColors.onSurface,
-    height: 1.4,
-  );
+  static TextStyle get labelLarge =>
+      GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500, height: 1.4);
 
   /// Medium label for regular labels
-  static TextStyle get labelMedium => GoogleFonts.inter(
-    fontSize: 12,
-    fontWeight: FontWeight.w500,
-    color: AppColors.onSurface,
-    height: 1.3,
-  );
+  static TextStyle get labelMedium =>
+      GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500, height: 1.3);
 
   /// Small label for secondary labels
-  static TextStyle get labelSmall => GoogleFonts.inter(
-    fontSize: 11,
-    fontWeight: FontWeight.w500,
-    color: AppColors.onSurfaceVariant,
-    height: 1.3,
-  );
+  static TextStyle get labelSmall =>
+      GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w500, height: 1.3);
 
   // --- BUTTON STYLES ---
   /// Primary button text style
@@ -112,7 +85,6 @@ class AppTextStyles {
   static TextStyle get caption => GoogleFonts.inter(
     fontSize: 12,
     fontWeight: FontWeight.normal,
-    color: AppColors.onSurfaceVariant,
     height: 1.3,
   );
 
@@ -120,7 +92,6 @@ class AppTextStyles {
   static TextStyle get overline => GoogleFonts.inter(
     fontSize: 10,
     fontWeight: FontWeight.w500,
-    color: AppColors.onSurfaceVariant,
     height: 1.2,
     letterSpacing: 1.5,
   );
@@ -143,18 +114,13 @@ class AppTextStyles {
   );
 
   /// Product title style
-  static TextStyle get productTitle => GoogleFonts.inter(
-    fontSize: 16,
-    fontWeight: FontWeight.w600,
-    color: AppColors.onBackground,
-    height: 1.3,
-  );
+  static TextStyle get productTitle =>
+      GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600, height: 1.3);
 
   /// Product description style
   static TextStyle get productDescription => GoogleFonts.inter(
     fontSize: 14,
     fontWeight: FontWeight.normal,
-    color: AppColors.onSurfaceVariant,
     height: 1.4,
   );
 }
