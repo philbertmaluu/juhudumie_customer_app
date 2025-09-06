@@ -426,11 +426,11 @@ class CustomSliverAppBar extends StatelessWidget {
                           ),
                           child: Icon(
                             category['icon'],
-                            size: 22,
+                            size: 24,
                             color:
                                 isDarkMode
                                     ? AppColors.onDarkSurface
-                                    : AppColors.onPrimary,
+                                    : AppColors.primary,
                           ),
                         ),
                         const SizedBox(height: 8),
