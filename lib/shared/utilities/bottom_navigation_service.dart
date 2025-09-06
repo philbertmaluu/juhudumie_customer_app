@@ -59,7 +59,9 @@ class BottomNavigationService {
 
   /// Navigate to messages page
   static void _navigateToMessages(BuildContext context) {
-    _showComingSoonMessage(context, 'Messages');
+    Navigator.of(
+      context,
+    ).pushNamedAndRemoveUntil(_messagesRoute, (route) => false);
   }
 
   /// Navigate to cart page

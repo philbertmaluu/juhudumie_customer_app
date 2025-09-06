@@ -7,6 +7,7 @@ import '../../modules/category/src/category_module.dart';
 import '../../modules/cart/src/cart_module.dart';
 import '../../modules/profile/src/profile_module.dart';
 import '../../modules/game/src/game_module.dart';
+import '../../modules/messages/src/messages_module.dart';
 import '../theme/index.dart';
 
 /// Route manager for handling app navigation and route definitions
@@ -54,6 +55,7 @@ class AppRouteManager {
     cart: (context) => const CartScreen(),
     profile: (context) => const ProfileScreen(),
     game: (context) => const GameScreen(),
+    messages: (context) => const MessagesScreen(),
 
     // Authentication routes (placeholder for future implementation)
     auth: (context) => const PlaceholderScreen(title: 'Authentication'),

@@ -190,6 +190,7 @@ class OrderTracking {
   final String description;
   final DateTime timestamp;
   final String? location;
+  final String? deliveryManId;
   final String? deliveryManName;
   final String? deliveryManPhone;
   final String? estimatedDelivery;
@@ -200,6 +201,7 @@ class OrderTracking {
     required this.description,
     required this.timestamp,
     this.location,
+    this.deliveryManId,
     this.deliveryManName,
     this.deliveryManPhone,
     this.estimatedDelivery,
