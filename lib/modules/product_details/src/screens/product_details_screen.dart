@@ -559,10 +559,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
       ),
       child: TabBar(
         controller: _tabController,
-        indicator: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-        ),
+        indicator: const BoxDecoration(),
+        indicatorSize: TabBarIndicatorSize.label,
         labelColor: AppColors.primary,
         unselectedLabelColor:
             isDarkMode
@@ -570,6 +568,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                 : AppColors.onSurface.withOpacity(0.6),
         labelStyle: AppTextStyles.bodyMedium.copyWith(
           fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: AppTextStyles.bodyMedium.copyWith(
+          fontWeight: FontWeight.w500,
         ),
         tabs: const [
           Tab(text: 'Description'),
