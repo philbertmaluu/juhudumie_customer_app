@@ -4,6 +4,9 @@ import '../../modules/onboarding/src/onboarding_module.dart';
 import '../../modules/landing/src/landing_module.dart';
 import '../../modules/product_details/src/product_details_module.dart';
 import '../../modules/category/src/category_module.dart';
+import '../../modules/cart/src/cart_module.dart';
+import '../../modules/profile/src/profile_module.dart';
+import '../../modules/game/src/game_module.dart';
 import '../theme/index.dart';
 
 /// Route manager for handling app navigation and route definitions
@@ -22,6 +25,7 @@ class AppRouteManager {
   static const String messages = '/messages';
   static const String cart = '/cart';
   static const String profile = '/profile';
+  static const String game = '/game';
 
   static const String sliverAppBarDemo = '/sliver-appbar-demo';
   static const String auth = '/auth';
@@ -47,18 +51,18 @@ class AppRouteManager {
     onboarding: (context) => OnboardingModule.onboardingScreen,
     home: (context) => const LandingScreen(),
     category: (context) => const CategoryScreen(),
+    cart: (context) => const CartScreen(),
+    profile: (context) => const ProfileScreen(),
+    game: (context) => const GameScreen(),
 
     // Authentication routes (placeholder for future implementation)
     auth: (context) => const PlaceholderScreen(title: 'Authentication'),
     login: (context) => const PlaceholderScreen(title: 'Login'),
     register: (context) => const PlaceholderScreen(title: 'Register'),
 
-    // User profile routes (placeholder for future implementation)
-    profile: (context) => const PlaceholderScreen(title: 'Profile'),
     settings: (context) => const PlaceholderScreen(title: 'Settings'),
 
     // Shopping routes (placeholder for future implementation)
-    cart: (context) => const PlaceholderScreen(title: 'Shopping Cart'),
     checkout: (context) => const PlaceholderScreen(title: 'Checkout'),
     orders: (context) => const PlaceholderScreen(title: 'Orders'),
 

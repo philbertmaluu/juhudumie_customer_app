@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../shared/theme/index.dart';
 import '../../../../shared/utilities/bottom_navigation_service.dart';
 import '../../../sliver_appbar/src/sliver_appbar_module.dart';
+import '../../../game/src/game_module.dart';
 import '../components/product_card.dart';
 import '../models/product_data.dart';
 import '../services/product_service.dart';
@@ -117,17 +118,28 @@ class _LandingScreenState extends State<LandingScreen> {
       child: Scaffold(
         backgroundColor:
             isDarkMode ? AppColors.darkBackground : AppColors.background,
-        body: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            // Custom sliver app bar
-            _buildSliverAppBar(),
+        body: Stack(
+          children: [
+            CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                // Custom sliver app bar
+                _buildSliverAppBar(),
 
-            // Category filter
-            _buildCategoryFilter(),
+                // Category filter
+                _buildCategoryFilter(),
 
-            // Products grid
-            _buildProductsGrid(),
+                // Products grid
+                _buildProductsGrid(),
+              ],
+            ),
+
+            // Floating game button
+            FloatingGameButton(
+              onTap: () {
+                Navigator.of(context).pushNamed('/game');
+              },
+            ),
           ],
         ),
       ),

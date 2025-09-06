@@ -64,12 +64,14 @@ class BottomNavigationService {
 
   /// Navigate to cart page
   static void _navigateToCart(BuildContext context) {
-    _showComingSoonMessage(context, 'Cart');
+    Navigator.of(context).pushNamedAndRemoveUntil(_cartRoute, (route) => false);
   }
 
   /// Navigate to profile page
   static void _navigateToProfile(BuildContext context) {
-    _showComingSoonMessage(context, 'Profile');
+    Navigator.of(
+      context,
+    ).pushNamedAndRemoveUntil(_profileRoute, (route) => false);
   }
 
   /// Show coming soon message for unimplemented features

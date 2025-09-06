@@ -4,6 +4,7 @@ import '../../../../shared/theme/index.dart';
 import '../../../../shared/utilities/custom_button.dart';
 import '../../../../shared/utilities/bottom_navigation_service.dart';
 import '../../../sliver_appbar/src/sliver_appbar_module.dart';
+import '../../../game/src/game_module.dart';
 import '../models/category_data.dart';
 import '../services/category_service.dart';
 import '../components/category_grid.dart';
@@ -126,16 +127,29 @@ class _CategoryScreenState extends State<CategoryScreen>
         backgroundColor:
             isDarkMode ? AppColors.darkBackground : AppColors.background,
         appBar: _buildAppBar(isDarkMode),
-        body: Column(
+        body: Stack(
           children: [
-            // Search and filter section
-            _buildSearchSection(isDarkMode),
-            // Tab bar
-            _buildTabBar(isDarkMode),
-            // Content with bottom padding for floating nav bar
-            Expanded(
-              child:
-                  _isLoading ? _buildLoadingState() : _buildContent(isDarkMode),
+            Column(
+              children: [
+                // Search and filter section
+                _buildSearchSection(isDarkMode),
+                // Tab bar
+                _buildTabBar(isDarkMode),
+                // Content with bottom padding for floating nav bar
+                Expanded(
+                  child:
+                      _isLoading
+                          ? _buildLoadingState()
+                          : _buildContent(isDarkMode),
+                ),
+              ],
+            ),
+
+            // Floating game button
+            FloatingGameButton(
+              onTap: () {
+                Navigator.of(context).pushNamed('/game');
+              },
             ),
           ],
         ),
