@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../shared/theme/index.dart';
 import '../../../../shared/utilities/custom_button.dart';
 import '../../../sliver_appbar/src/sliver_appbar_module.dart';
 import '../models/category_data.dart';
 import '../services/category_service.dart';
 import '../components/category_grid.dart';
-import '../components/category_card.dart';
 
 /// Category screen for browsing and searching categories
 class CategoryScreen extends StatefulWidget {
@@ -165,10 +165,18 @@ class _CategoryScreenState extends State<CategoryScreen>
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient:
+              isDarkMode
+                  ? AppColors.darkPrimaryGradient
+                  : AppColors.primaryGradient,
+        ),
+      ),
       title: Text(
         'Categories',
         style: AppTextStyles.headingMedium.copyWith(
-          color: isDarkMode ? AppColors.onDarkSurface : AppColors.onSurface,
+          color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -176,17 +184,22 @@ class _CategoryScreenState extends State<CategoryScreen>
         IconButton(
           icon: Icon(
             _isGridView ? Icons.list : Icons.grid_view,
-            color: isDarkMode ? AppColors.onDarkSurface : AppColors.onSurface,
+            color: Colors.white,
           ),
           onPressed: _toggleView,
         ),
-        IconButton(
-          icon: Icon(
-            Icons.filter_list,
-            color: isDarkMode ? AppColors.onDarkSurface : AppColors.onSurface,
-          ),
-          onPressed: () {
-            // TODO: Show filter options
+        //theme toggle button
+        Consumer<ThemeManager>(
+          builder: (context, themeManager, child) {
+            return IconButton(
+              icon: Icon(
+                themeManager.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                themeManager.toggleTheme();
+              },
+            );
           },
         ),
       ],
@@ -199,85 +212,163 @@ class _CategoryScreenState extends State<CategoryScreen>
       padding: AppSpacing.screenPaddingMd,
       child: Column(
         children: [
-          // Search bar
+          // Professional search bar with modern design (matching sliver app bar style)
           Container(
+            height: 48,
             decoration: BoxDecoration(
-              color: isDarkMode ? AppColors.darkSurface : Colors.white,
-              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors:
+                    isDarkMode
+                        ? [
+                          AppColors.darkSurface,
+                          AppColors.darkSurface.withOpacity(0.8),
+                        ]
+                        : [Colors.white, Colors.grey[50]!],
+              ),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: AppColors.primary.withOpacity(0.2),
+                width: 1.5,
+              ),
               boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
                 BoxShadow(
                   color:
                       isDarkMode
-                          ? Colors.black.withOpacity(0.1)
+                          ? Colors.black.withOpacity(0.3)
                           : Colors.black.withOpacity(0.05),
-                  blurRadius: 8,
+                  blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
               ],
             ),
-            child: TextField(
-              controller: _searchController,
-              onChanged: _onSearchChanged,
-              decoration: InputDecoration(
-                hintText: 'Search categories...',
-                hintStyle: AppTextStyles.bodyMedium.copyWith(
-                  color:
-                      isDarkMode
-                          ? AppColors.onDarkSurface.withOpacity(0.5)
-                          : AppColors.onSurface.withOpacity(0.5),
+            child: Row(
+              children: [
+                const SizedBox(width: 16),
+                // Search icon with background
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.primary.withOpacity(0.1),
+                        AppColors.primary.withOpacity(0.05),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(
+                    Icons.search_rounded,
+                    color: AppColors.primary,
+                    size: 18,
+                  ),
                 ),
-                prefixIcon: Icon(
-                  Icons.search,
-                  color:
-                      isDarkMode
-                          ? AppColors.onDarkSurface.withOpacity(0.5)
-                          : AppColors.onSurface.withOpacity(0.5),
-                ),
-                suffixIcon:
-                    _searchQuery.isNotEmpty
-                        ? IconButton(
-                          icon: Icon(
-                            Icons.clear,
+                const SizedBox(width: 12),
+                // Search input area
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      // Focus on search field
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Search categories',
+                          style: AppTextStyles.bodyMedium.copyWith(
                             color:
                                 isDarkMode
-                                    ? AppColors.onDarkSurface.withOpacity(0.5)
-                                    : AppColors.onSurface.withOpacity(0.5),
+                                    ? AppColors.onDarkSurface
+                                    : Colors.grey[600],
+                            fontWeight: FontWeight.w500,
                           ),
-                          onPressed: () {
-                            _searchController.clear();
-                            _onSearchChanged('');
-                          },
-                        )
-                        : null,
-                border: InputBorder.none,
-                contentPadding: AppSpacing.inputPaddingMd,
-              ),
-            ),
-          ),
-
-          AppSpacing.gapVerticalMd,
-
-          // Stats row
-          Row(
-            children: [
-              Text(
-                '${_filteredCategories.length} categories',
-                style: AppTextStyles.bodyMedium.copyWith(
+                        ),
+                        Text(
+                          'Find your favorite categories',
+                          style: AppTextStyles.caption.copyWith(
+                            color:
+                                isDarkMode
+                                    ? AppColors.onDarkSurface.withOpacity(0.7)
+                                    : Colors.grey[400],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Voice search button
+                Container(
+                  width: 1,
+                  height: 24,
                   color:
                       isDarkMode
-                          ? AppColors.onDarkSurface.withOpacity(0.7)
-                          : AppColors.onSurface.withOpacity(0.7),
+                          ? AppColors.onDarkSurface.withOpacity(0.3)
+                          : Colors.grey[300],
                 ),
-              ),
-              const Spacer(),
-              Text(
-                '${_categoryService.getTotalProducts()} total products',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w600,
+                GestureDetector(
+                  onTap: () {
+                    // Handle voice search
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Voice search coming soon!'),
+                        duration: Duration(seconds: 1),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Icon(
+                        Icons.mic_rounded,
+                        color: AppColors.primary,
+                        size: 16,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(width: 8),
+                // Clear search button (when there's text)
+                if (_searchQuery.isNotEmpty)
+                  GestureDetector(
+                    onTap: () {
+                      _searchController.clear();
+                      _onSearchChanged('');
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Icon(
+                          Icons.clear_rounded,
+                          color: AppColors.primary,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                const SizedBox(width: 8),
+              ],
+            ),
           ),
         ],
       ),
