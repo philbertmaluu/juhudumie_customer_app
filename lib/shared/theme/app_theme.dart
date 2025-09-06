@@ -42,14 +42,6 @@ class AppTheme {
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
 
-      // Card theme
-      cardTheme: CardTheme(
-        color: AppColors.surface,
-        elevation: 2,
-        shadowColor: AppColors.shadow,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-
       // Elevated button theme
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -203,14 +195,6 @@ class AppTheme {
         centerTitle: true,
         titleTextStyle: AppTextStyles.headingMedium,
         systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
-
-      // Card theme for dark mode
-      cardTheme: CardTheme(
-        color: const Color(0xFF2C2C2C),
-        elevation: 2,
-        shadowColor: Colors.black26,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
 
       // Text theme for dark mode
