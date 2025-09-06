@@ -221,11 +221,12 @@ class CustomSliverAppBar extends StatelessWidget {
   /// Build category and search section (Alibaba style)
   Widget _buildCategoryAndSearchSection(BuildContext context, bool isDarkMode) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
         children: [
           // Professional search bar with modern design
           Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16.0),
             height: 48,
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -383,6 +384,9 @@ class CustomSliverAppBar extends StatelessWidget {
             height: 100, // Increased height for bigger cards
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ), // Add padding to ListView instead
               itemCount: _getCategories().length,
               itemBuilder: (context, index) {
                 final category = _getCategories()[index];
@@ -424,13 +428,15 @@ class CustomSliverAppBar extends StatelessWidget {
                             color: AppColors.primary.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Icon(
-                            category['icon'],
-                            size: 24,
-                            color:
-                                isDarkMode
-                                    ? AppColors.onDarkSurface
-                                    : AppColors.primary,
+                          child: Center(
+                            child: Icon(
+                              category['icon'],
+                              size: 28,
+                              color:
+                                  isDarkMode
+                                      ? AppColors.onDarkSurface
+                                      : AppColors.primary,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 8),
