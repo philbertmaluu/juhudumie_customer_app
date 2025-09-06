@@ -5,6 +5,7 @@ import '../../modules/onboarding/src/onboarding_module.dart';
 import '../../modules/landing/src/landing_module.dart';
 import '../../modules/sliver_appbar/src/sliver_appbar_module.dart';
 import '../../modules/sliver_appbar/src/services/sliver_appbar_service.dart';
+import '../../modules/product_details/src/product_details_module.dart';
 import '../theme/index.dart';
 
 /// Route manager for handling app navigation and route definitions
@@ -28,6 +29,7 @@ class AppRouteManager {
   static const String cart = '/cart';
   static const String checkout = '/checkout';
   static const String orders = '/orders';
+  static const String productDetails = '/product-details';
   static const String products = '/products';
   static const String productDetail = '/product-detail';
   static const String categories = '/categories';
@@ -57,6 +59,14 @@ class AppRouteManager {
     cart: (context) => const PlaceholderScreen(title: 'Shopping Cart'),
     checkout: (context) => const PlaceholderScreen(title: 'Checkout'),
     orders: (context) => const PlaceholderScreen(title: 'Orders'),
+
+    // Product details route
+    productDetails: (context) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final productId = args?['productId'] as String? ?? '1';
+      return ProductDetailsScreen(productId: productId);
+    },
 
     // Product routes (placeholder for future implementation)
     products: (context) => const PlaceholderScreen(title: 'Products'),

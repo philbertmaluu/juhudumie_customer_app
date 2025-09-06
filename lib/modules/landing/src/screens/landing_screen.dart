@@ -63,13 +63,9 @@ class _LandingScreenState extends State<LandingScreen> {
 
   /// Handle product tap
   void _onProductTap(Product product) {
-    // TODO: Navigate to product details
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Tapped on ${product.name}'),
-        duration: const Duration(seconds: 1),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).pushNamed('/product-details', arguments: {'productId': product.id});
   }
 
   /// Handle favorite toggle
