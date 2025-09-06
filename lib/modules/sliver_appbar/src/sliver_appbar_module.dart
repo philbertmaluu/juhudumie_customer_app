@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'components/custom_sliver_appbar.dart';
-import 'screens/sliver_appbar_demo.dart';
+
 import 'services/sliver_appbar_service.dart';
 import 'models/promotion_data.dart';
 
@@ -32,8 +32,7 @@ class SliverAppBarModule {
     );
   }
 
-  /// Get the demo screen widget
-  static Widget get demoScreen => const SliverAppBarDemo();
+
 
   /// Get app bar configuration
   static SliverAppBarConfig get appBarConfig =>

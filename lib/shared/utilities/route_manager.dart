@@ -224,14 +224,14 @@ class HomeScreen extends StatelessWidget {
                             ? AppColors.darkBackgroundGradient
                             : AppColors.backgroundGradient,
                   ),
-                  child: Column(
-                    children: [
-                      // Promotions grid
-                      _buildPromotionsSection(context, isDarkMode),
-
-                      // Sample content
-                      _buildSampleContent(context, isDarkMode, themeManager),
-                    ],
+                  child: const Center(
+                    child: Text(
+                      'Welcome to Jihudumie',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -397,20 +397,6 @@ class HomeScreen extends StatelessWidget {
           ),
 
           AppSpacing.gapVerticalXxl,
-
-          // Theme toggle button
-          Center(
-            child: ElevatedButton(
-              onPressed: () {
-                if (themeManager.isDarkMode) {
-                  themeManager.setLightTheme();
-                } else {
-                  themeManager.setDarkTheme();
-                }
-              },
-              child: Text(themeManager.isDarkMode ? 'Light Mode' : 'Dark Mode'),
-            ),
-          ),
         ],
       ),
     );

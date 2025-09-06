@@ -114,7 +114,7 @@ class SliverAppBarConfig {
     this.showSearchBar = true,
     this.showNotifications = true,
     this.showCart = true,
-    this.expandedHeight = 300.0,
+    this.expandedHeight = 350.0,
     this.collapsedHeight = 80.0,
   });
 

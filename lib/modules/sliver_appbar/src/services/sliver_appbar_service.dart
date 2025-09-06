@@ -13,7 +13,7 @@ class SliverAppBarService {
     showSearchBar: true,
     showNotifications: true,
     showCart: true,
-    expandedHeight: 320.0,
+    expandedHeight: 350.0,
     collapsedHeight: 80.0,
   );
 
