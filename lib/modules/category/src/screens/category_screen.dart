@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../shared/theme/index.dart';
 import '../../../../shared/utilities/custom_button.dart';
+import '../../../../shared/utilities/bottom_navigation_service.dart';
 import '../../../sliver_appbar/src/sliver_appbar_module.dart';
 import '../models/category_data.dart';
 import '../services/category_service.dart';
 import '../components/category_grid.dart';
+import '../components/category_products_bottom_sheet.dart';
 
 /// Category screen for browsing and searching categories
 class CategoryScreen extends StatefulWidget {
@@ -71,13 +73,18 @@ class _CategoryScreenState extends State<CategoryScreen>
 
   /// Handle category tap
   void _onCategoryTap(Category category) {
-    // TODO: Navigate to category products screen
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Selected ${category.name}'),
-        backgroundColor: AppColors.primary,
-        duration: const Duration(seconds: 2),
-      ),
+    // Show the professional bottom sheet with products
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder:
+          (context) => CategoryProductsBottomSheet(
+            category: category,
+            onClose: () {
+              // Optional: Handle close callback
+            },
+          ),
     );
   }
 
@@ -90,44 +97,22 @@ class _CategoryScreenState extends State<CategoryScreen>
 
   /// Handle bottom navigation tap
   void _onBottomNavTap(int index) {
+    // Store the previous index before updating
+    final previousIndex = _currentBottomNavIndex;
+
     setState(() {
       _currentBottomNavIndex = index;
     });
 
-    // Handle navigation based on selected tab
-    switch (index) {
-      case 0: // Home
-        Navigator.of(
-          context,
-        ).pushNamedAndRemoveUntil('/home', (route) => false);
-        break;
-      case 1: // Categories - already on category page
-        break;
-      case 2: // Messages
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Messages feature coming soon!'),
-            duration: Duration(seconds: 1),
-          ),
-        );
-        break;
-      case 3: // Cart
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Cart feature coming soon!'),
-            duration: Duration(seconds: 1),
-          ),
-        );
-        break;
-      case 4: // Profile
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile feature coming soon!'),
-            duration: Duration(seconds: 1),
-          ),
-        );
-        break;
-    }
+    // Use the bottom navigation service for consistent navigation logic
+    BottomNavigationService.handleNavigationTap(
+      context,
+      index,
+      currentIndex: previousIndex,
+      onSamePageTap: () {
+        // Optional: Handle same page tap (e.g., scroll to top)
+      },
+    );
   }
 
   @override
@@ -145,10 +130,8 @@ class _CategoryScreenState extends State<CategoryScreen>
           children: [
             // Search and filter section
             _buildSearchSection(isDarkMode),
-
             // Tab bar
             _buildTabBar(isDarkMode),
-
             // Content with bottom padding for floating nav bar
             Expanded(
               child:

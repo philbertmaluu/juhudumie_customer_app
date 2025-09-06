@@ -19,14 +19,15 @@ class AppRouteManager {
   static const String onboarding = '/onboarding';
   static const String home = '/home';
   static const String category = '/category';
+  static const String messages = '/messages';
+  static const String cart = '/cart';
+  static const String profile = '/profile';
 
   static const String sliverAppBarDemo = '/sliver-appbar-demo';
   static const String auth = '/auth';
   static const String login = '/auth/login';
   static const String register = '/auth/register';
-  static const String profile = '/profile';
   static const String settings = '/settings';
-  static const String cart = '/cart';
   static const String checkout = '/checkout';
   static const String orders = '/orders';
   static const String productDetails = '/product-details';
@@ -73,7 +74,6 @@ class AppRouteManager {
     products: (context) => const PlaceholderScreen(title: 'Products'),
     productDetail:
         (context) => const PlaceholderScreen(title: 'Product Detail'),
-    categories: (context) => const PlaceholderScreen(title: 'Categories'),
     search: (context) => const PlaceholderScreen(title: 'Search'),
 
     // Other routes (placeholder for future implementation)

@@ -51,7 +51,7 @@ class CategoryCard extends StatelessWidget {
       children: [
         // Image section
         Container(
-          height: 130,
+          height: 135,
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(

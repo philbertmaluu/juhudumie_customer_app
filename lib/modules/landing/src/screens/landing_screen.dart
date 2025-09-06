@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../shared/theme/index.dart';
+import '../../../../shared/utilities/bottom_navigation_service.dart';
 import '../../../sliver_appbar/src/sliver_appbar_module.dart';
 import '../components/product_card.dart';
 import '../models/product_data.dart';
@@ -81,42 +82,29 @@ class _LandingScreenState extends State<LandingScreen> {
 
   /// Handle bottom navigation tap
   void _onBottomNavTap(int index) {
+    // Store the previous index before updating
+    final previousIndex = _currentBottomNavIndex;
+
     setState(() {
       _currentBottomNavIndex = index;
     });
 
-    // Handle navigation based on selected tab
-    switch (index) {
-      case 0: // Home - already on landing page
-        break;
-      case 1: // Categories
-        Navigator.of(context).pushNamed('/category');
-        break;
-      case 2: // Messages
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Messages feature coming soon!'),
-            duration: Duration(seconds: 1),
-          ),
-        );
-        break;
-      case 3: // Cart
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Cart feature coming soon!'),
-            duration: Duration(seconds: 1),
-          ),
-        );
-        break;
-      case 4: // Profile
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile feature coming soon!'),
-            duration: Duration(seconds: 1),
-          ),
-        );
-        break;
-    }
+    // Use the bottom navigation service for consistent navigation logic
+    BottomNavigationService.handleNavigationTap(
+      context,
+      index,
+      currentIndex: previousIndex,
+      onSamePageTap: () {
+        // Scroll to top when tapping home while already on home
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+        }
+      },
+    );
   }
 
   @override
