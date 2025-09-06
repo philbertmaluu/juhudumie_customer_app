@@ -128,8 +128,77 @@ class ProductDetailsService {
         'Shelf Life: 3 days',
         'Decoration: Custom message available',
       ],
+      '4': [
+        'Screen Size: 6.7"',
+        'Resolution: 1284 x 2778',
+        'Storage: 256GB',
+        'Camera: 12MP Triple',
+        'Battery: 3687mAh',
+        'Processor: A15 Bionic',
+        'Operating System: iOS 15',
+      ],
+      '5': [
+        'Processor: Intel Core i7',
+        'RAM: 16GB',
+        'Storage: 512GB SSD',
+        'Graphics: NVIDIA RTX 3060',
+        'Display: 15.6" FHD',
+        'Battery: 4-cell',
+        'Operating System: Windows 11',
+      ],
+      '6': [
+        'Material: 100% Cotton',
+        'Size: Available in S, M, L, XL',
+        'Color: Navy Blue',
+        'Care: Machine washable',
+        'Origin: Made in Tanzania',
+        'Style: Casual',
+        'Season: All season',
+      ],
+      '7': [
+        'Capacity: 500ml',
+        'Material: Stainless Steel',
+        'Insulation: 12 hours hot, 24 hours cold',
+        'Lid: Leak-proof',
+        'Weight: 350g',
+        'Dimensions: 7.5" x 2.8"',
+        'Warranty: 1 year',
+      ],
+      '8': [
+        'Type: Running Shoes',
+        'Size: Available in 6-12',
+        'Material: Mesh upper, rubber sole',
+        'Color: Black/White',
+        'Weight: 280g',
+        'Features: Cushioned, breathable',
+        'Brand: Local Tanzanian',
+      ],
+      '9': [
+        'Type: Smartphone',
+        'Screen: 6.1" LCD',
+        'Storage: 64GB',
+        'Camera: 12MP',
+        'Battery: 3000mAh',
+        'OS: Android 12',
+        'Price: Affordable',
+      ],
+      '10': [
+        'Type: Laptop',
+        'Screen: 14" HD',
+        'RAM: 8GB',
+        'Storage: 256GB SSD',
+        'Processor: Intel i5',
+        'OS: Windows 11',
+        'Weight: 1.5kg',
+      ],
     };
-    return specs[productId] ?? ['High quality', 'Durable', 'Premium materials'];
+    return specs[productId] ??
+        [
+          'Brand: Generic',
+          'Model: Standard',
+          'Type: Electronic',
+          'Warranty: 1 year',
+        ];
   }
 
   /// Get product features
@@ -159,6 +228,62 @@ class ProductDetailsService {
         'Delivery available',
         'Custom messages',
       ],
+      '4': [
+        'Large display',
+        'Triple camera system',
+        'Long battery life',
+        'Fast processor',
+        '5G connectivity',
+        'Premium build quality',
+      ],
+      '5': [
+        'High performance',
+        'Gaming ready',
+        'Fast SSD storage',
+        'Dedicated graphics',
+        'Backlit keyboard',
+        'Long battery life',
+      ],
+      '6': [
+        'Comfortable fit',
+        'Durable material',
+        'Easy care',
+        'Classic style',
+        'Local production',
+        'Affordable price',
+      ],
+      '7': [
+        'Excellent insulation',
+        'Leak-proof design',
+        'Durable construction',
+        'Easy to clean',
+        'BPA-free',
+        'Long-lasting',
+      ],
+      '8': [
+        'Comfortable cushioning',
+        'Breathable material',
+        'Durable sole',
+        'Lightweight design',
+        'Good traction',
+        'Local brand',
+      ],
+      '9': [
+        'Affordable price',
+        'Good performance',
+        'Latest Android',
+        'Decent camera',
+        'Reliable battery',
+        'Local support',
+      ],
+      '10': [
+        'Portable design',
+        'Good performance',
+        'Fast storage',
+        'Latest Windows',
+        'Lightweight',
+        'Great value',
+      ],
     };
     return features[productId] ??
         ['Premium quality', 'Excellent performance', 'Great value'];
@@ -170,6 +295,13 @@ class ProductDetailsService {
       '1': '2 years manufacturer warranty',
       '2': '1 year manufacturer warranty',
       '3': 'Freshness guarantee - 3 days',
+      '4': '1 year manufacturer warranty',
+      '5': '2 years manufacturer warranty',
+      '6': '6 months warranty',
+      '7': '1 year warranty',
+      '8': '6 months warranty',
+      '9': '1 year warranty',
+      '10': '2 years warranty',
     };
     return warranties[productId] ?? '1 year warranty';
   }
@@ -181,7 +313,18 @@ class ProductDetailsService {
 
   /// Get stock quantity
   int _getStockQuantity(String productId) {
-    final stock = {'1': 15, '2': 8, '3': 3};
+    final stock = {
+      '1': 15,
+      '2': 8,
+      '3': 3,
+      '4': 12,
+      '5': 5,
+      '6': 20,
+      '7': 18,
+      '8': 25,
+      '9': 30,
+      '10': 7,
+    };
     return stock[productId] ?? 10;
   }
 

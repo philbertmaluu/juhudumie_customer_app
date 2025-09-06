@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../modules/splash/src/splash_module.dart';
 import '../../modules/onboarding/src/onboarding_module.dart';
 import '../../modules/landing/src/landing_module.dart';
-import '../../modules/sliver_appbar/src/sliver_appbar_module.dart';
-import '../../modules/sliver_appbar/src/services/sliver_appbar_service.dart';
 import '../../modules/product_details/src/product_details_module.dart';
+import '../../modules/category/src/category_module.dart';
 import '../theme/index.dart';
 
 /// Route manager for handling app navigation and route definitions
@@ -20,6 +18,8 @@ class AppRouteManager {
   static const String splash = '/splash';
   static const String onboarding = '/onboarding';
   static const String home = '/home';
+  static const String category = '/category';
+
   static const String sliverAppBarDemo = '/sliver-appbar-demo';
   static const String auth = '/auth';
   static const String login = '/auth/login';
@@ -45,6 +45,7 @@ class AppRouteManager {
     splash: (context) => SplashModule.splashScreen,
     onboarding: (context) => OnboardingModule.onboardingScreen,
     home: (context) => const LandingScreen(),
+    category: (context) => const CategoryScreen(),
 
     // Authentication routes (placeholder for future implementation)
     auth: (context) => const PlaceholderScreen(title: 'Authentication'),

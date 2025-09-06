@@ -676,8 +676,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
             ),
           ),
           AppSpacing.gapVerticalMd,
-          ..._product!.detailedSpecifications.map(
-            (spec) => Container(
+          ..._product!.detailedSpecifications.map((spec) {
+            final parts = spec.split(':');
+            final key = parts.isNotEmpty ? parts[0].trim() : spec;
+            final value = parts.length > 1 ? parts[1].trim() : '';
+
+            return Container(
               margin: const EdgeInsets.only(bottom: 12),
               padding: AppSpacing.cardPaddingMd,
               decoration: BoxDecoration(
@@ -688,7 +692,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                 children: [
                   Expanded(
                     child: Text(
-                      spec.split(':')[0],
+                      key,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color:
                             isDarkMode
@@ -698,20 +702,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                       ),
                     ),
                   ),
-                  Text(
-                    spec.split(':')[1],
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color:
-                          isDarkMode
-                              ? AppColors.onDarkSurface
-                              : AppColors.onSurface,
-                      fontWeight: FontWeight.w600,
+                  if (value.isNotEmpty)
+                    Text(
+                      value,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color:
+                            isDarkMode
+                                ? AppColors.onDarkSurface
+                                : AppColors.onSurface,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
                 ],
               ),
-            ),
-          ),
+            );
+          }),
         ],
       ),
     );

@@ -117,8 +117,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                       onTap: () => widget.onTap(0),
                     ),
                     _buildNavItem(
-                      icon: Icons.store_rounded,
-                      label: 'Shops',
+                      icon: Icons.category_rounded,
+                      label: 'Categories',
                       isSelected: widget.currentIndex == 1,
                       isDarkMode: isDarkMode,
                       onTap: () => widget.onTap(1),

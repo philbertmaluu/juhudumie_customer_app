@@ -89,13 +89,8 @@ class _LandingScreenState extends State<LandingScreen> {
     switch (index) {
       case 0: // Home - already on landing page
         break;
-      case 1: // Shops
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Shops feature coming soon!'),
-            duration: Duration(seconds: 1),
-          ),
-        );
+      case 1: // Categories
+        Navigator.of(context).pushNamed('/category');
         break;
       case 2: // Messages
         ScaffoldMessenger.of(context).showSnackBar(
