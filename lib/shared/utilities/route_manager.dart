@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../modules/splash/src/splash_module.dart';
 import '../../modules/onboarding/src/onboarding_module.dart';
+import '../../modules/sliver_appbar/src/sliver_appbar_module.dart';
+import '../../modules/sliver_appbar/src/services/sliver_appbar_service.dart';
 import '../theme/index.dart';
 
 /// Route manager for handling app navigation and route definitions
@@ -13,6 +15,7 @@ class AppRouteManager {
   static const String splash = '/splash';
   static const String onboarding = '/onboarding';
   static const String home = '/home';
+  static const String sliverAppBarDemo = '/sliver-appbar-demo';
   static const String auth = '/auth';
   static const String login = '/auth/login';
   static const String register = '/auth/register';
@@ -198,62 +201,41 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ThemeManager>(
       builder: (context, themeManager, child) {
+        final config = SliverAppBarModule.appBarConfig;
+        final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
         return Scaffold(
-          appBar: AppGradientComponents.gradientAppBar(
-            title: const Text('Jihudumie'),
-            actions: [
-              IconButton(
-                icon: Icon(_getThemeIcon(themeManager)),
-                onPressed: () => _showThemeMenu(context, themeManager),
+          body: CustomScrollView(
+            slivers: [
+              // Custom sliver app bar
+              SliverAppBarModule.getCustomSliverAppBar(
+                config: config,
+                pinned: true,
+                floating: false,
+                snap: false,
               ),
-              IconButton(
-                icon: const Icon(Icons.shopping_cart),
-                onPressed:
-                    () => AppRouteManager.navigateTo(
-                      context,
-                      AppRouteManager.cart,
-                    ),
+
+              // Content section
+              SliverToBoxAdapter(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient:
+                        isDarkMode
+                            ? AppColors.darkBackgroundGradient
+                            : AppColors.backgroundGradient,
+                  ),
+                  child: Column(
+                    children: [
+                      // Promotions grid
+                      _buildPromotionsSection(context, isDarkMode),
+
+                      // Sample content
+                      _buildSampleContent(context, isDarkMode, themeManager),
+                    ],
+                  ),
+                ),
               ),
             ],
-          ),
-          body: Container(
-            decoration: BoxDecoration(
-              gradient:
-                  Theme.of(context).brightness == Brightness.dark
-                      ? const LinearGradient(
-                        colors: [
-                          AppColors.darkBackground,
-                          AppColors.darkSurface,
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      )
-                      : AppColors.backgroundGradient,
-            ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AppGradientComponents.gradientIcon(
-                    Icons.shopping_bag,
-                    size: 80,
-                  ),
-                  AppSpacing.gapVerticalXxl,
-                  Text(
-                    'Welcome to Jihudumie',
-                    style: AppTextStyles.headingLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                  AppSpacing.gapVerticalLg,
-                  Text(
-                    'Your one-stop shop for everything you need',
-                    style: AppTextStyles.bodyLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                  AppSpacing.gapVerticalLg,
-                ],
-              ),
-            ),
           ),
           floatingActionButton:
               AppGradientComponents.gradientFloatingActionButton(
@@ -266,6 +248,256 @@ class HomeScreen extends StatelessWidget {
               ),
         );
       },
+    );
+  }
+
+  /// Build promotions section
+  Widget _buildPromotionsSection(BuildContext context, bool isDarkMode) {
+    final promotions = SliverAppBarModule.getActivePromotions();
+
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Active Promotions',
+            style: AppTextStyles.headingMedium.copyWith(
+              color:
+                  isDarkMode ? AppColors.onDarkSurface : AppColors.onBackground,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Promotions grid
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 1.5,
+            ),
+            itemCount: promotions.length,
+            itemBuilder: (context, index) {
+              final promotion = promotions[index];
+              return _buildPromotionCard(context, promotion, isDarkMode);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Build individual promotion card
+  Widget _buildPromotionCard(
+    BuildContext context,
+    dynamic promotion,
+    bool isDarkMode,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDarkMode ? AppColors.darkSurface : AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color:
+              isDarkMode
+                  ? AppColors.onDarkSurface.withOpacity(0.1)
+                  : AppColors.onBackground.withOpacity(0.1),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: isDarkMode ? AppColors.darkShadow : AppColors.shadow,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Promotion type badge
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                SliverAppBarService.getPromotionTypeDisplayName(promotion.type),
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+
+            const Spacer(),
+
+            // Promotion title
+            Text(
+              promotion.title,
+              style: AppTextStyles.bodyLarge.copyWith(
+                color:
+                    isDarkMode ? AppColors.onDarkSurface : AppColors.onSurface,
+                fontWeight: FontWeight.bold,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+
+            const SizedBox(height: 4),
+
+            // Promotion subtitle
+            Text(
+              promotion.subtitle,
+              style: AppTextStyles.bodySmall.copyWith(
+                color:
+                    isDarkMode
+                        ? AppColors.onDarkSurface.withOpacity(0.7)
+                        : AppColors.onSurface.withOpacity(0.7),
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Build sample content
+  Widget _buildSampleContent(
+    BuildContext context,
+    bool isDarkMode,
+    ThemeManager themeManager,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Featured Products',
+            style: AppTextStyles.headingMedium.copyWith(
+              color:
+                  isDarkMode ? AppColors.onDarkSurface : AppColors.onBackground,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Sample product cards
+          ...List.generate(
+            3,
+            (index) => _buildSampleProductCard(context, index, isDarkMode),
+          ),
+
+          AppSpacing.gapVerticalXxl,
+
+          // Theme toggle button
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                if (themeManager.isDarkMode) {
+                  themeManager.setLightTheme();
+                } else {
+                  themeManager.setDarkTheme();
+                }
+              },
+              child: Text(themeManager.isDarkMode ? 'Light Mode' : 'Dark Mode'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Build sample product card
+  Widget _buildSampleProductCard(
+    BuildContext context,
+    int index,
+    bool isDarkMode,
+  ) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDarkMode ? AppColors.darkSurface : AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color:
+              isDarkMode
+                  ? AppColors.onDarkSurface.withOpacity(0.1)
+                  : AppColors.onBackground.withOpacity(0.1),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          // Product image placeholder
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color:
+                  isDarkMode
+                      ? AppColors.onDarkSurface.withOpacity(0.1)
+                      : AppColors.onBackground.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              Icons.shopping_bag,
+              color:
+                  isDarkMode
+                      ? AppColors.onDarkSurface.withOpacity(0.6)
+                      : AppColors.onBackground.withOpacity(0.6),
+            ),
+          ),
+
+          const SizedBox(width: 16),
+
+          // Product details
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Sample Product ${index + 1}',
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    color:
+                        isDarkMode
+                            ? AppColors.onDarkSurface
+                            : AppColors.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'High-quality product description',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color:
+                        isDarkMode
+                            ? AppColors.onDarkSurface.withOpacity(0.7)
+                            : AppColors.onSurface.withOpacity(0.7),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '\$${(index + 1) * 25}.99',
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
