@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class BottomNavigationService {
   static const String _homeRoute = '/home';
   static const String _categoryRoute = '/category';
+  static const String _shopsRoute = '/shops';
   static const String _messagesRoute = '/messages';
   static const String _cartRoute = '/cart';
   static const String _profileRoute = '/profile';
@@ -31,13 +32,16 @@ class BottomNavigationService {
       case 1: // Categories
         _navigateToCategories(context);
         break;
-      case 2: // Messages
+      case 2: // Shops
+        _navigateToShops(context);
+        break;
+      case 3: // Messages
         _navigateToMessages(context);
         break;
-      case 3: // Cart
+      case 4: // Cart
         _navigateToCart(context);
         break;
-      case 4: // Profile
+      case 5: // Profile
         _navigateToProfile(context);
         break;
       default:
@@ -55,6 +59,13 @@ class BottomNavigationService {
     Navigator.of(
       context,
     ).pushNamedAndRemoveUntil(_categoryRoute, (route) => false);
+  }
+
+  /// Navigate to shops page
+  static void _navigateToShops(BuildContext context) {
+    Navigator.of(
+      context,
+    ).pushNamedAndRemoveUntil(_shopsRoute, (route) => false);
   }
 
   /// Navigate to messages page
@@ -97,12 +108,14 @@ class BottomNavigationService {
         return 0;
       case _categoryRoute:
         return 1;
-      case _messagesRoute:
+      case _shopsRoute:
         return 2;
-      case _cartRoute:
+      case _messagesRoute:
         return 3;
-      case _profileRoute:
+      case _cartRoute:
         return 4;
+      case _profileRoute:
+        return 5;
       default:
         return 0; // Default to home
     }
@@ -118,6 +131,7 @@ class BottomNavigationService {
     return [
       _homeRoute,
       _categoryRoute,
+      _shopsRoute,
       _messagesRoute,
       _cartRoute,
       _profileRoute,
@@ -132,10 +146,12 @@ class BottomNavigationService {
       case 1:
         return _categoryRoute;
       case 2:
-        return _messagesRoute;
+        return _shopsRoute;
       case 3:
-        return _cartRoute;
+        return _messagesRoute;
       case 4:
+        return _cartRoute;
+      case 5:
         return _profileRoute;
       default:
         return _homeRoute;
@@ -149,12 +165,14 @@ class BottomNavigationService {
         return 0;
       case _categoryRoute:
         return 1;
-      case _messagesRoute:
+      case _shopsRoute:
         return 2;
-      case _cartRoute:
+      case _messagesRoute:
         return 3;
-      case _profileRoute:
+      case _cartRoute:
         return 4;
+      case _profileRoute:
+        return 5;
       default:
         return 0;
     }

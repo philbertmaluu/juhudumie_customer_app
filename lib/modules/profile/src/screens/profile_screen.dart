@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../shared/theme/index.dart';
 import '../../../../shared/utilities/bottom_navigation_service.dart';
 import '../../../sliver_appbar/src/sliver_appbar_module.dart';
 import '../../../game/src/game_module.dart';
+import '../../../wishlist/src/wishlist_module.dart';
 import '../models/profile_data.dart';
 import '../services/profile_service.dart';
 import '../components/profile_menu_section.dart';
@@ -93,19 +95,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  /// Handle settings
-  void _onSettings() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Settings feature coming soon! ⚙️'),
-        backgroundColor: AppColors.primary,
-        duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
-      ),
-    );
+  /// Handle theme toggle
+  void _onThemeToggle() {
+    final themeManager = Provider.of<ThemeManager>(context, listen: false);
+    themeManager.toggleTheme();
   }
 
   /// Handle menu item tap
@@ -113,10 +106,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // Handle different menu items
     switch (item.id) {
       case 'orders':
-        _showComingSoon('My Orders');
+        _navigateToOrders();
         break;
       case 'wishlist':
-        _showComingSoon('Wishlist');
+        _showWishlistModal();
         break;
       case 'reviews':
         _showComingSoon('My Reviews');
@@ -166,6 +159,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
       default:
         _showComingSoon(item.title);
     }
+  }
+
+  /// Navigate to orders tab in cart screen
+  void _navigateToOrders() {
+    // Navigate to cart screen with orders tab selected
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      '/cart',
+      (route) => false,
+      arguments: {'initialTab': 1}, // 1 = Orders tab, 0 = Cart tab
+    );
+  }
+
+  /// Show wishlist modal
+  void _showWishlistModal() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const WishlistModal(),
+    );
   }
 
   /// Show coming soon message
@@ -325,13 +338,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          IconButton(
-            onPressed: _onSettings,
-            icon: const Icon(
-              Icons.settings_outlined,
-              color: Colors.white,
-              size: 24,
-            ),
+          Consumer<ThemeManager>(
+            builder: (context, themeManager, child) {
+              return IconButton(
+                onPressed: _onThemeToggle,
+                icon: Icon(
+                  themeManager.isDarkMode
+                      ? Icons.light_mode_rounded
+                      : Icons.dark_mode_rounded,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              );
+            },
           ),
         ],
       ),

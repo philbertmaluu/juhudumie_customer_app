@@ -3,12 +3,16 @@ import 'package:provider/provider.dart';
 import 'shared/theme/index.dart';
 import 'shared/utilities/route_manager.dart';
 import 'modules/map/src/map_module.dart';
+import 'modules/shops/src/shops_module.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Google Maps service
   await MapInitializationService.initialize();
+
+  // Initialize shop service with sample data
+  ShopService.instance.loadSampleData();
 
   runApp(const JihudumieApp());
 }

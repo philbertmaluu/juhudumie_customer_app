@@ -8,6 +8,7 @@ import '../../modules/cart/src/cart_module.dart';
 import '../../modules/profile/src/profile_module.dart';
 import '../../modules/game/src/game_module.dart';
 import '../../modules/messages/src/messages_module.dart';
+import '../../modules/shops/src/shops_module.dart';
 import '../theme/index.dart';
 
 /// Route manager for handling app navigation and route definitions
@@ -27,6 +28,7 @@ class AppRouteManager {
   static const String cart = '/cart';
   static const String profile = '/profile';
   static const String game = '/game';
+  static const String shops = '/shops';
 
   static const String sliverAppBarDemo = '/sliver-appbar-demo';
   static const String auth = '/auth';
@@ -56,6 +58,7 @@ class AppRouteManager {
     profile: (context) => const ProfileScreen(),
     game: (context) => const GameScreen(),
     messages: (context) => const MessagesScreen(),
+    shops: (context) => const ShopsScreen(),
 
     // Authentication routes (placeholder for future implementation)
     auth: (context) => const PlaceholderScreen(title: 'Authentication'),

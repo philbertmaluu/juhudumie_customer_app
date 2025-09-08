@@ -20,6 +20,18 @@ class AppTextStyles {
   static TextStyle get headingSmall =>
       GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w600, height: 1.3);
 
+  /// Title large style for large titles
+  static TextStyle get titleLarge =>
+      GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w500, height: 1.3);
+
+  /// Title medium style for medium titles
+  static TextStyle get titleMedium =>
+      GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w500, height: 1.3);
+
+  /// Title small style for small titles
+  static TextStyle get titleSmall =>
+      GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500, height: 1.3);
+
   // --- BODY TEXT STYLES ---
   /// Large body text for important content
   static TextStyle get bodyLarge => GoogleFonts.inter(

@@ -3,10 +3,16 @@ import 'package:provider/provider.dart';
 import '../../../../shared/theme/index.dart';
 import '../../../../shared/utilities/bottom_navigation_service.dart';
 import '../../../sliver_appbar/src/sliver_appbar_module.dart';
+import '../../../messages/src/components/delivery_map_modal.dart';
+import '../../../messages/src/models/message_data.dart';
 import '../models/cart_data.dart';
+import '../models/order_data.dart';
 import '../services/cart_service.dart';
+import '../services/order_service.dart';
 import '../components/cart_item_card.dart';
 import '../components/cart_summary_card.dart';
+import '../components/order_card.dart';
+import '../components/order_filter_chip.dart';
 
 /// Cart screen for managing shopping cart
 class CartScreen extends StatefulWidget {
@@ -16,9 +22,11 @@ class CartScreen extends StatefulWidget {
   State<CartScreen> createState() => _CartScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   final CartService _cartService = CartService();
+  final OrderService _orderService = OrderService();
   final ScrollController _scrollController = ScrollController();
+  TabController? _tabController;
 
   List<CartItem> _cartItems = [];
   CartSummary _cartSummary = CartSummary.fromItems([]);
@@ -28,12 +36,28 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
+    // Check for initial tab argument
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      if (args != null && args['initialTab'] != null) {
+        final initialTab = args['initialTab'] as int;
+        if (initialTab >= 0 && initialTab < 2) {
+          _tabController?.animateTo(initialTab);
+        }
+      }
+    });
+
     _loadCartData();
+    _loadOrderData();
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _tabController?.dispose();
     super.dispose();
   }
 
@@ -53,6 +77,11 @@ class _CartScreenState extends State<CartScreen> {
         _state = _cartService.state;
       });
     });
+  }
+
+  /// Load order data
+  void _loadOrderData() {
+    _orderService.loadSampleData();
   }
 
   /// Handle bottom navigation tap
@@ -212,14 +241,14 @@ class _CartScreenState extends State<CartScreen> {
         ),
       ),
       title: Text(
-        'Shopping Cart',
+        'Cart & Orders',
         style: AppTextStyles.headingMedium.copyWith(
           color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
       ),
       actions: [
-        if (_cartItems.isNotEmpty)
+        if (_tabController?.index == 0 && _cartItems.isNotEmpty)
           IconButton(
             onPressed: _onClearCart,
             icon: const Icon(Icons.delete_outline_rounded, color: Colors.white),
@@ -238,11 +267,53 @@ class _CartScreenState extends State<CartScreen> {
           },
         ),
       ],
+      bottom:
+          _tabController != null
+              ? TabBar(
+                controller: _tabController!,
+                indicatorColor: Colors.white,
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white.withOpacity(0.7),
+                tabs: [
+                  Tab(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [Text('Cart (${_cartItems.length})')],
+                    ),
+                  ),
+                  Tab(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Orders (${_orderService.orders.length})'),
+                      ],
+                    ),
+                  ),
+                ],
+              )
+              : null,
     );
   }
 
   /// Build body content
   Widget _buildBody(bool isDarkMode) {
+    if (_tabController == null) {
+      return _buildCartTab(isDarkMode); // Show cart by default while loading
+    }
+
+    return TabBarView(
+      controller: _tabController!,
+      children: [
+        // Cart tab
+        _buildCartTab(isDarkMode),
+        // Orders tab
+        _buildOrdersTab(isDarkMode),
+      ],
+    );
+  }
+
+  /// Build cart tab content
+  Widget _buildCartTab(bool isDarkMode) {
     switch (_state) {
       case CartState.loading:
         return _buildLoadingState();
@@ -253,6 +324,21 @@ class _CartScreenState extends State<CartScreen> {
       case CartState.loaded:
         return _buildCartContent(isDarkMode);
     }
+  }
+
+  /// Build orders tab content
+  Widget _buildOrdersTab(bool isDarkMode) {
+    return Column(
+      children: [
+        const SizedBox(height: AppSpacing.sm),
+        // Filter chips
+        _buildOrderFilters(),
+        const SizedBox(height: AppSpacing.sm),
+
+        // Orders list
+        Expanded(child: _buildOrdersList(isDarkMode)),
+      ],
+    );
   }
 
   /// Build loading state
@@ -434,6 +520,303 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  /// Build order filters
+  Widget _buildOrderFilters() {
+    final orderStats = _orderService.orderStatistics;
+
+    return Container(
+      height: 50,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          OrderFilterChip(
+            filter: OrderFilter.all,
+            isSelected: _orderService.currentFilter == OrderFilter.all,
+            onTap: () {
+              setState(() {
+                _orderService.setFilter(OrderFilter.all);
+              });
+            },
+            count: _orderService.orders.length,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          OrderFilterChip(
+            filter: OrderFilter.pending,
+            isSelected: _orderService.currentFilter == OrderFilter.pending,
+            onTap: () {
+              setState(() {
+                _orderService.setFilter(OrderFilter.pending);
+              });
+            },
+            count: orderStats['pending'] ?? 0,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          OrderFilterChip(
+            filter: OrderFilter.processing,
+            isSelected: _orderService.currentFilter == OrderFilter.processing,
+            onTap: () {
+              setState(() {
+                _orderService.setFilter(OrderFilter.processing);
+              });
+            },
+            count: orderStats['processing'] ?? 0,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          OrderFilterChip(
+            filter: OrderFilter.shipped,
+            isSelected: _orderService.currentFilter == OrderFilter.shipped,
+            onTap: () {
+              setState(() {
+                _orderService.setFilter(OrderFilter.shipped);
+              });
+            },
+            count: orderStats['shipped'] ?? 0,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          OrderFilterChip(
+            filter: OrderFilter.delivered,
+            isSelected: _orderService.currentFilter == OrderFilter.delivered,
+            onTap: () {
+              setState(() {
+                _orderService.setFilter(OrderFilter.delivered);
+              });
+            },
+            count: orderStats['delivered'] ?? 0,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Build orders list
+  Widget _buildOrdersList(bool isDarkMode) {
+    final filteredOrders = _orderService.filteredOrders;
+
+    if (filteredOrders.isEmpty) {
+      return _buildEmptyOrdersState(isDarkMode);
+    }
+
+    return ListView.builder(
+      padding: EdgeInsets.only(
+        bottom: AppSpacing.md + 100, // Space for bottom nav
+      ),
+      itemCount: filteredOrders.length,
+      itemBuilder: (context, index) {
+        final order = filteredOrders[index];
+        return OrderCard(
+          order: order,
+          onTap: () => _onOrderTap(order),
+          onCancel: () => _onCancelOrder(order),
+          onTrack: () => _onTrackOrder(order),
+          onReorder: () => _onReorder(order),
+        );
+      },
+    );
+  }
+
+  /// Build empty orders state
+  Widget _buildEmptyOrdersState(bool isDarkMode) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.receipt_long_outlined,
+            size: 80,
+            color: AppColors.onSurfaceVariant,
+          ),
+          AppSpacing.gapVerticalXxl,
+          Text(
+            'No Orders Found',
+            style: AppTextStyles.headingMedium.copyWith(
+              color: AppColors.onSurfaceVariant,
+            ),
+          ),
+          AppSpacing.gapVerticalLg,
+          Text(
+            'You haven\'t placed any orders yet.\nStart shopping to see your orders here!',
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.onSurfaceVariant,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          AppSpacing.gapVerticalXxl,
+          ElevatedButton(
+            onPressed: () {
+              // Switch to cart tab
+              _tabController?.animateTo(0);
+            },
+            child: const Text('Start Shopping'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Handle order tap
+  void _onOrderTap(Order order) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Viewing order ${order.orderNumber}'),
+        backgroundColor: AppColors.primary,
+        duration: const Duration(seconds: 1),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+  }
+
+  /// Handle cancel order
+  void _onCancelOrder(Order order) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Cancel Order'),
+            content: Text(
+              'Are you sure you want to cancel order ${order.orderNumber}?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('No'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  if (_orderService.cancelOrder(order.id)) {
+                    setState(() {});
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Order ${order.orderNumber} cancelled'),
+                        backgroundColor: AppColors.success,
+                        duration: const Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.error,
+                ),
+                child: const Text('Yes, Cancel'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  /// Handle track order
+  void _onTrackOrder(Order order) {
+    // Create OrderTracking object from Order
+    final tracking = OrderTracking(
+      orderId: order.id,
+      status: order.status.name,
+      description: _getOrderStatusDescription(order.status),
+      timestamp: order.orderDate,
+      location: 'Dar es Salaam, Tanzania',
+      deliveryManId: 'delivery_${order.id}',
+      deliveryManName: 'John Mwalimu',
+      deliveryManPhone: '+255 123 456 789',
+      estimatedDelivery:
+          order.estimatedDelivery != null
+              ? '${DateTime.now().difference(order.estimatedDelivery!).inHours} hours'
+              : '2-3 hours',
+    );
+
+    _showDeliveryMapModal(tracking);
+  }
+
+  /// Show delivery map modal
+  void _showDeliveryMapModal(OrderTracking tracking) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder:
+          (context) => DeliveryMapModal(
+            tracking: tracking,
+            onCallDeliveryMan:
+                tracking.deliveryManPhone != null
+                    ? () {
+                      Navigator.of(context).pop();
+                      _onCallDeliveryMan(tracking.deliveryManPhone!);
+                    }
+                    : null,
+            onMessageDeliveryMan:
+                tracking.deliveryManId != null
+                    ? () {
+                      Navigator.of(context).pop();
+                      _onMessageDeliveryMan(tracking.deliveryManId!);
+                    }
+                    : null,
+          ),
+    );
+  }
+
+  /// Handle call delivery man
+  void _onCallDeliveryMan(String phoneNumber) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Calling delivery partner: $phoneNumber'),
+        backgroundColor: AppColors.primary,
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+  }
+
+  /// Handle message delivery man
+  void _onMessageDeliveryMan(String deliveryManId) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Opening chat with delivery partner'),
+        backgroundColor: AppColors.primary,
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+  }
+
+  /// Get order status description
+  String _getOrderStatusDescription(OrderStatus status) {
+    switch (status) {
+      case OrderStatus.pending:
+        return 'Your order is pending confirmation';
+      case OrderStatus.confirmed:
+        return 'Your order has been confirmed';
+      case OrderStatus.processing:
+        return 'Your order is being prepared';
+      case OrderStatus.shipped:
+        return 'Your order is on the way to you';
+      case OrderStatus.delivered:
+        return 'Your order has been delivered';
+      case OrderStatus.cancelled:
+        return 'Your order has been cancelled';
+      case OrderStatus.refunded:
+        return 'Your order has been refunded';
+    }
+  }
+
+  /// Handle reorder
+  void _onReorder(Order order) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Adding items from ${order.orderNumber} to cart'),
+        backgroundColor: AppColors.success,
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
     );
   }
 }
