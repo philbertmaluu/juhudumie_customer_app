@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../shared/theme/index.dart';
 import '../models/shop_data.dart';
+import 'shop_products_modal.dart';
+import '../../../rating/src/rating_module.dart';
 
 /// Shop card component for displaying shop information
 class ShopCard extends StatelessWidget {
@@ -477,40 +479,99 @@ class ShopCard extends StatelessWidget {
   }
 
   Widget _buildActionButtons(bool isDarkMode) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.store_rounded, color: Colors.white, size: 20),
-            const SizedBox(width: AppSpacing.sm),
-            Text(
-              'Welcome to Shop',
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
+    return Builder(
+      builder:
+          (context) => Row(
+            children: [
+              // Main action button (3/4 width)
+              Expanded(
+                flex: 3,
+                child: GestureDetector(
+                  onTap: () => _showShopProductsModal(context),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.sm,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.store_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          'Welcome to Shop',
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+
+              const SizedBox(width: AppSpacing.sm),
+
+              // Rating button (1/4 width)
+              Expanded(
+                flex: 1,
+                child: GestureDetector(
+                  onTap: () => _showRatingModal(context),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.sm,
+                    ),
+                    decoration: BoxDecoration(
+                      color:
+                          isDarkMode
+                              ? AppColors.darkSurfaceVariant
+                              : AppColors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                      border: Border.all(
+                        color: AppColors.primary.withOpacity(0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.star_rounded,
+                          color: AppColors.primary,
+                          size: 16,
+                        ),
+                        const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          'Rate',
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
     );
   }
 
@@ -564,6 +625,38 @@ class ShopCard extends StatelessWidget {
                   ),
                 ),
       ),
+    );
+  }
+
+  void _showShopProductsModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder:
+          (context) => ShopProductsModal(
+            shop: shop,
+            onClose: () {
+              // Optional: Handle close callback
+            },
+          ),
+    );
+  }
+
+  void _showRatingModal(BuildContext context) {
+    Navigator.of(context).pushNamed(
+      '/rating',
+      arguments: {
+        'targetId': shop.id,
+        'type': RatingType.shop,
+        'targetName': shop.name,
+        'targetImage': shop.logoUrl,
+        'metadata': {
+          'category': shop.category.name,
+          'location': shop.city,
+          'distance': shop.distanceFromUser,
+        },
+      },
     );
   }
 }

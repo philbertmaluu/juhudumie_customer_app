@@ -16,3 +16,4 @@ export 'screens/shops_screen.dart';
 export 'components/shop_card.dart';
 export 'components/shop_filter_chip.dart';
 export 'components/shop_search_bar.dart';
+export 'components/shop_products_modal.dart';

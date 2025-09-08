@@ -9,6 +9,7 @@ import '../../modules/profile/src/profile_module.dart';
 import '../../modules/game/src/game_module.dart';
 import '../../modules/messages/src/messages_module.dart';
 import '../../modules/shops/src/shops_module.dart';
+import '../../modules/rating/src/rating_module.dart';
 import '../theme/index.dart';
 
 /// Route manager for handling app navigation and route definitions
@@ -29,6 +30,7 @@ class AppRouteManager {
   static const String profile = '/profile';
   static const String game = '/game';
   static const String shops = '/shops';
+  static const String rating = '/rating';
 
   static const String sliverAppBarDemo = '/sliver-appbar-demo';
   static const String auth = '/auth';
@@ -59,6 +61,17 @@ class AppRouteManager {
     game: (context) => const GameScreen(),
     messages: (context) => const MessagesScreen(),
     shops: (context) => const ShopsScreen(),
+    rating: (context) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      return RatingScreen(
+        targetId: args?['targetId'] as String? ?? '1',
+        type: args?['type'] as RatingType? ?? RatingType.shop,
+        targetName: args?['targetName'] as String? ?? 'Unknown',
+        targetImage: args?['targetImage'] as String?,
+        metadata: args?['metadata'] as Map<String, dynamic>?,
+      );
+    },
 
     // Authentication routes (placeholder for future implementation)
     auth: (context) => const PlaceholderScreen(title: 'Authentication'),

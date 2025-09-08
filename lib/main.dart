@@ -4,6 +4,7 @@ import 'shared/theme/index.dart';
 import 'shared/utilities/route_manager.dart';
 import 'modules/map/src/map_module.dart';
 import 'modules/shops/src/shops_module.dart';
+import 'modules/rating/src/rating_module.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
