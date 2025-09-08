@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'components/custom_sliver_appbar.dart';
 import 'components/custom_bottom_navbar.dart';
-
+import 'components/floating_promotion_banner.dart';
+import 'components/promotion_banner.dart' as banner;
 import 'services/sliver_appbar_service.dart';
 import 'models/promotion_data.dart';
 
@@ -9,6 +10,8 @@ import 'models/promotion_data.dart';
 class SliverAppBarModule {
   // Private constructor to prevent instantiation
   SliverAppBarModule._();
+
+  // ==================== SLIVER APP BAR ====================
 
   /// Get the custom sliver app bar widget
   static Widget getCustomSliverAppBar({
@@ -36,6 +39,8 @@ class SliverAppBarModule {
   /// Get app bar configuration
   static SliverAppBarConfig get appBarConfig =>
       SliverAppBarService.appBarConfig;
+
+  // ==================== PROMOTIONS ====================
 
   /// Get active promotions
   static List<PromotionBanner> getActivePromotions() {
@@ -66,6 +71,27 @@ class SliverAppBarModule {
   static List<PromotionBanner> getPromotionsByType(PromotionType type) {
     return SliverAppBarService.getPromotionsByType(type);
   }
+
+  // ==================== FLOATING PROMOTION BANNER ====================
+
+  /// Get floating promotion banner wrapper
+  static Widget getFloatingPromotionBannerWrapper({
+    required Widget child,
+    List<banner.PromotionMediaItem>? mediaItems,
+    bool showBanner = true,
+    double bannerHeight = 180.0,
+    double topOffset = 0.0,
+  }) {
+    return FloatingPromotionBannerWrapper(
+      child: child,
+      mediaItems: mediaItems,
+      showBanner: showBanner,
+      bannerHeight: bannerHeight,
+      topOffset: topOffset,
+    );
+  }
+
+  // ==================== BOTTOM NAVIGATION ====================
 
   /// Get custom bottom navigation bar
   static Widget getCustomBottomNavBar({

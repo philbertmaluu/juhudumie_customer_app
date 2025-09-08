@@ -23,6 +23,31 @@ class ShopService {
   /// Get current filters
   ShopSearchFilters get currentFilters => _currentFilters;
 
+  /// Get a random featured shop for promotions
+  Shop? getRandomFeaturedShop() {
+    if (_shops.isEmpty) return null;
+
+    // Get shops that are verified, premium, or have high ratings
+    final featuredShops =
+        _shops
+            .where(
+              (shop) =>
+                  shop.isVerified ||
+                  shop.isPremium ||
+                  shop.rating.averageRating >= 4.0,
+            )
+            .toList();
+
+    if (featuredShops.isEmpty) {
+      // Fallback to any shop if no featured shops
+      featuredShops.addAll(_shops);
+    }
+
+    // Return a random shop
+    final random = DateTime.now().millisecondsSinceEpoch % featuredShops.length;
+    return featuredShops[random];
+  }
+
   /// Load sample shop data
   void loadSampleData() {
     _shops = _generateSampleShops();

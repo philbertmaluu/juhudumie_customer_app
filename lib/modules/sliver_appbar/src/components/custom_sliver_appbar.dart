@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../shared/theme/index.dart';
 import '../models/promotion_data.dart';
-import '../services/sliver_appbar_service.dart';
-import '../../../landing/src/services/product_service.dart';
+import '../../../shops/src/services/shop_service.dart';
 
 /// Custom sliver app bar with promotions and app branding
 class CustomSliverAppBar extends StatelessWidget {
@@ -31,7 +30,6 @@ class CustomSliverAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final featuredPromotion = config.featuredPromotion;
 
     return SliverAppBar(
       expandedHeight: expandedHeight ?? config.expandedHeight,
@@ -57,16 +55,13 @@ class CustomSliverAppBar extends StatelessWidget {
                 // Top section with logo and actions
                 _buildTopSection(context, isDarkMode),
 
-                // Promotions section
-                if (featuredPromotion != null)
-                  _buildPromotionsSection(
-                    context,
-                    featuredPromotion,
-                    isDarkMode,
-                  ),
+                // Simple promotion banner
+                _buildSimplePromotionBanner(context, isDarkMode),
 
                 // Category and search section
                 _buildCategoryAndSearchSection(context, isDarkMode),
+                // Promotion banner section
+                // _buildPromotionBannerSection(context, isDarkMode),
               ],
             ),
           ),
@@ -117,104 +112,304 @@ class CustomSliverAppBar extends StatelessWidget {
     );
   }
 
-  /// Build promotions banner section
-  Widget _buildPromotionsSection(
-    BuildContext context,
-    PromotionBanner promotion,
-    bool isDarkMode,
-  ) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Promotion type badge
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
+  /// Build simple promotion banner
+  Widget _buildSimplePromotionBanner(BuildContext context, bool isDarkMode) {
+    final featuredShop = ShopService.instance.getRandomFeaturedShop();
+
+    return GestureDetector(
+      onTap: () {
+        // Handle promotion banner tap
+        if (featuredShop != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Exploring ${featuredShop.name}!'),
+              duration: const Duration(seconds: 1),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Constellation deals explored!'),
+              duration: Duration(seconds: 1),
+            ),
+          );
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+        height: 56,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors:
+                isDarkMode
+                    ? [
+                      AppColors.primary.withOpacity(0.15),
+                      AppColors.primary.withOpacity(0.08),
+                      AppColors.primary.withOpacity(0.12),
+                    ]
+                    : [
+                      AppColors.primary.withOpacity(0.12),
+                      AppColors.primary.withOpacity(0.06),
+                      AppColors.primary.withOpacity(0.10),
+                    ],
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
               color:
                   isDarkMode
-                      ? AppColors.onDarkSurface.withOpacity(0.2)
-                      : AppColors.onPrimary.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
+                      ? AppColors.primary.withOpacity(0.1)
+                      : AppColors.primary.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
-            child: Text(
-              SliverAppBarService.getPromotionTypeDisplayName(promotion.type),
-              style: AppTextStyles.caption.copyWith(
-                color:
-                    isDarkMode ? AppColors.onDarkSurface : AppColors.onPrimary,
-                fontWeight: FontWeight.w600,
+          ],
+          border: Border.all(
+            color:
+                isDarkMode
+                    ? AppColors.primary.withOpacity(0.3)
+                    : AppColors.primary.withOpacity(0.2),
+            width: 1.5,
+          ),
+        ),
+        child: Row(
+          children: [
+            // Left accent bar
+            Container(
+              width: 4,
+              height: 56,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.primary,
+                    AppColors.primary.withOpacity(0.7),
+                  ],
+                ),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
+                ),
               ),
             ),
-          ),
-
-          const SizedBox(height: 8),
-
-          // Promotion content
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(width: 16),
+            // Vendor logo with constellation styling - positioned to deviate from banner
+            Positioned(
+              top: -12,
+              left: 4,
+              child: Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.white.withOpacity(0.25),
+                      Colors.white.withOpacity(0.15),
+                    ],
+                  ),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.4),
+                    width: 2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.1),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Stack(
                   children: [
-                    Text(
-                      promotion.title,
-                      style: AppTextStyles.headingSmall.copyWith(
-                        color:
-                            isDarkMode
-                                ? AppColors.onDarkSurface
-                                : AppColors.onPrimary,
-                        fontWeight: FontWeight.bold,
+                    // Constellation dots
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: Container(
+                        width: 5,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white.withOpacity(0.7),
+                              blurRadius: 4,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      promotion.subtitle,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color:
-                            isDarkMode
-                                ? AppColors.onDarkSurface.withOpacity(0.8)
-                                : AppColors.onPrimary.withOpacity(0.8),
+                    Positioned(
+                      top: 14,
+                      right: 10,
+                      child: Container(
+                        width: 3.5,
+                        height: 3.5,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.7),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 12,
+                      left: 14,
+                      child: Container(
+                        width: 4,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.8),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: Container(
+                        width: 2.5,
+                        height: 2.5,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.6),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    // Center vendor logo - rounded and bigger
+                    Center(
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.95),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withOpacity(0.2),
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child:
+                            featuredShop != null &&
+                                    featuredShop.logoUrl.isNotEmpty
+                                ? ClipOval(
+                                  child: Image.network(
+                                    featuredShop.logoUrl,
+                                    width: 36,
+                                    height: 36,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Icon(
+                                        Icons.store_rounded,
+                                        size: 20,
+                                        color: AppColors.primary,
+                                      );
+                                    },
+                                  ),
+                                )
+                                : Icon(
+                                  Icons.store_rounded,
+                                  size: 20,
+                                  color: AppColors.primary,
+                                ),
                       ),
                     ),
                   ],
                 ),
               ),
-
-              // Action button
-              if (promotion.actionText != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color:
-                        isDarkMode
-                            ? AppColors.onDarkSurface.withOpacity(0.1)
-                            : AppColors.onPrimary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color:
-                          isDarkMode
-                              ? AppColors.onDarkSurface.withOpacity(0.3)
-                              : AppColors.onPrimary.withOpacity(0.3),
-                      width: 1,
+            ),
+            const SizedBox(width: 16),
+            // Promotion content
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    featuredShop != null
+                        ? featuredShop.name
+                        : 'Constellation Deals',
+                    style: AppTextStyles.titleSmall.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.8,
                     ),
                   ),
-                  child: Text(
-                    promotion.actionText!,
-                    style: AppTextStyles.buttonPrimary.copyWith(
-                      color:
-                          isDarkMode
-                              ? AppColors.onDarkSurface
-                              : AppColors.onPrimary,
+                  const SizedBox(height: 2),
+                  Text(
+                    featuredShop != null
+                        ? featuredShop.tagline.isNotEmpty
+                            ? featuredShop.tagline
+                            : 'Premium ${featuredShop.categoryText.toLowerCase()} store'
+                        : 'Premium vendors, stellar prices',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: Colors.white.withOpacity(0.9),
+                      fontWeight: FontWeight.w500,
+                      fontStyle: FontStyle.italic,
                     ),
                   ),
+                ],
+              ),
+            ),
+            // Action button
+            Container(
+              margin: const EdgeInsets.only(right: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.primary,
+                    AppColors.primary.withOpacity(0.8),
+                  ],
                 ),
-            ],
-          ),
-        ],
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.3),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Explore',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.arrow_forward_rounded,
+                    size: 14,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -377,123 +572,9 @@ class CustomSliverAppBar extends StatelessWidget {
               ],
             ),
           ),
-
-          const SizedBox(height: 16),
-
-          // Categories horizontal scroll (Alibaba style - full width)
-          SizedBox(
-            height: 110, // Increased height for bigger cards with text
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-              ), // Add padding to ListView instead
-              itemCount: _getCategories().length,
-              itemBuilder: (context, index) {
-                final category = _getCategories()[index];
-                return GestureDetector(
-                  onTap: () {
-                    // Handle category tap
-                  },
-                  child: Container(
-                    width: 90, // Increased width for bigger cards with text
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration: BoxDecoration(
-                      color: isDarkMode ? AppColors.darkSurface : Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color:
-                            isDarkMode
-                                ? AppColors.onDarkSurface.withOpacity(0.1)
-                                : Colors.transparent,
-                        width: 1,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color:
-                              isDarkMode
-                                  ? Colors.black.withOpacity(0.3)
-                                  : Colors.black.withOpacity(0.08),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              category['icon'],
-                              size: 28,
-                              color:
-                                  isDarkMode
-                                      ? AppColors.onDarkSurface
-                                      : AppColors.primary,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          category['name'],
-                          style: TextStyle(
-                            fontSize: 12,
-                            color:
-                                isDarkMode
-                                    ? AppColors.onDarkSurface
-                                    : Colors.black87,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
         ],
       ),
     );
-  }
-
-  /// Get categories list
-  List<Map<String, dynamic>> _getCategories() {
-    final productService = ProductService();
-    final categories = productService.getCategories();
-
-    // Map category names to appropriate icons
-    final iconMap = {
-      'Electronics': Icons.electrical_services,
-      'Fashion': Icons.checkroom,
-      'Home & Garden': Icons.home,
-      'Sports': Icons.sports,
-      'Books': Icons.book,
-      'Beauty': Icons.face,
-      'Toys': Icons.toys,
-      'Automotive': Icons.directions_car,
-      'Health': Icons.health_and_safety,
-      'Food': Icons.restaurant,
-    };
-
-    return categories
-        .map(
-          (category) => {
-            'name': category.name,
-            'icon': iconMap[category.name] ?? Icons.category,
-          },
-        )
-        .toList();
   }
 
   /// Build action button
