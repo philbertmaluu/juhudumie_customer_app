@@ -24,7 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   UserProfile? _userProfile;
   List<ProfileSection> _menuSections = [];
   bool _isLoading = true;
-  int _currentBottomNavIndex = 4; // Profile tab is selected
+  int _currentBottomNavIndex = 5; // Profile tab is selected
 
   @override
   void initState() {

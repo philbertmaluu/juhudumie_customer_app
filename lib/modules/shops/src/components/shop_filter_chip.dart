@@ -21,82 +21,90 @@ class ShopFilterChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-        decoration: BoxDecoration(
-          color:
-              isSelected
-                  ? AppColors.primary
-                  : isDarkMode
-                  ? AppColors.darkSurfaceVariant
-                  : AppColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          border: Border.all(
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: AppSpacing.xs,
+      ),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.xs,
+          ),
+          decoration: BoxDecoration(
             color:
                 isSelected
                     ? AppColors.primary
                     : isDarkMode
-                    ? AppColors.outline
-                    : AppColors.outlineVariant,
-            width: 1,
+                    ? AppColors.darkSurfaceVariant
+                    : AppColors.surfaceVariant,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+            boxShadow:
+                isDarkMode && !isSelected
+                    ? [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
+                      ),
+                    ]
+                    : null,
           ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              _getFilterIcon(filter),
-              size: 16,
-              color:
-                  isSelected
-                      ? AppColors.onPrimary
-                      : isDarkMode
-                      ? AppColors.onDarkSurface
-                      : AppColors.onSurface,
-            ),
-            const SizedBox(width: AppSpacing.xs),
-            Text(
-              _getFilterLabel(filter),
-              style: AppTextStyles.bodySmall.copyWith(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                _getFilterIcon(filter),
+                size: 14,
                 color:
                     isSelected
                         ? AppColors.onPrimary
                         : isDarkMode
                         ? AppColors.onDarkSurface
                         : AppColors.onSurface,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
-            ),
-            if (count != null && count! > 0) ...[
-              const SizedBox(width: AppSpacing.xs),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.xs,
-                  vertical: 2,
-                ),
-                decoration: BoxDecoration(
+              const SizedBox(width: 6),
+              Text(
+                _getFilterLabel(filter),
+                style: AppTextStyles.caption.copyWith(
                   color:
                       isSelected
-                          ? AppColors.onPrimary.withOpacity(0.2)
-                          : AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                ),
-                child: Text(
-                  count.toString(),
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: isSelected ? AppColors.onPrimary : AppColors.primary,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 10,
-                  ),
+                          ? AppColors.onPrimary
+                          : isDarkMode
+                          ? AppColors.onDarkSurface
+                          : AppColors.onSurface,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                 ),
               ),
+              if (count != null && count! > 0) ...[
+                const SizedBox(width: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color:
+                        isSelected
+                            ? AppColors.onPrimary.withOpacity(0.2)
+                            : AppColors.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                  ),
+                  child: Text(
+                    count.toString(),
+                    style: AppTextStyles.caption.copyWith(
+                      color:
+                          isSelected ? AppColors.onPrimary : AppColors.primary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 9,
+                    ),
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

@@ -31,7 +31,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   List<CartItem> _cartItems = [];
   CartSummary _cartSummary = CartSummary.fromItems([]);
   CartState _state = CartState.loading;
-  int _currentBottomNavIndex = 3; // Cart tab is selected
+  int _currentBottomNavIndex = 4; // Cart tab is selected
 
   @override
   void initState() {

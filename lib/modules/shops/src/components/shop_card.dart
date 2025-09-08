@@ -29,218 +29,75 @@ class ShopCard extends StatelessWidget {
         margin: EdgeInsets.only(
           left: AppSpacing.md,
           right: AppSpacing.md,
-          bottom: AppSpacing.sm,
+          bottom: AppSpacing.lg,
         ),
-        padding: AppSpacing.cardPaddingMd,
         decoration: BoxDecoration(
           color: isDarkMode ? AppColors.darkSurface : Colors.white,
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          boxShadow: [
-            BoxShadow(
-              color:
-                  isDarkMode
-                      ? Colors.black.withOpacity(0.1)
-                      : Colors.black.withOpacity(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          boxShadow:
+              isDarkMode
+                  ? [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                  : [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 16,
+                      offset: const Offset(0, 6),
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header row
-            Row(
-              children: [
-                // Shop logo
-                _buildShopLogo(),
+            // Banner section
+            _buildBannerSection(isDarkMode),
 
-                AppSpacing.gapHorizontalMd,
+            // Content section
+            Padding(
+              padding: AppSpacing.cardPaddingMd,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Shop header
+                  _buildShopHeader(isDarkMode),
 
-                // Shop info
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Shop name and verification
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              shop.name,
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color:
-                                    isDarkMode
-                                        ? AppColors.onDarkSurface
-                                        : AppColors.onSurface,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          if (shop.isVerified) ...[
-                            const SizedBox(width: AppSpacing.xs),
-                            Icon(
-                              Icons.verified_rounded,
-                              color: AppColors.primary,
-                              size: 16,
-                            ),
-                          ],
-                        ],
+                  AppSpacing.gapVerticalSm,
+
+                  // Tagline
+                  if (shop.tagline.isNotEmpty)
+                    Text(
+                      shop.tagline,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color:
+                            isDarkMode
+                                ? AppColors.onDarkSurface.withOpacity(0.8)
+                                : AppColors.onSurface.withOpacity(0.8),
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
 
-                      AppSpacing.gapVerticalXs,
+                  AppSpacing.gapVerticalMd,
 
-                      // Category and distance
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.xs,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(
-                                AppSpacing.radiusSm,
-                              ),
-                            ),
-                            child: Text(
-                              shop.categoryText,
-                              style: AppTextStyles.caption.copyWith(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          Icon(
-                            Icons.location_on_rounded,
-                            color:
-                                isDarkMode
-                                    ? AppColors.onDarkSurface.withOpacity(0.6)
-                                    : AppColors.onSurface.withOpacity(0.6),
-                            size: 14,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${shop.distanceFromUser.toStringAsFixed(1)} km',
-                            style: AppTextStyles.caption.copyWith(
-                              color:
-                                  isDarkMode
-                                      ? AppColors.onDarkSurface.withOpacity(0.6)
-                                      : AppColors.onSurface.withOpacity(0.6),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                  // Stats row
+                  _buildStatsRow(isDarkMode),
 
-                // Rating
-                _buildRating(isDarkMode),
-              ],
-            ),
+                  AppSpacing.gapVerticalMd,
 
-            AppSpacing.gapVerticalSm,
-
-            // Tagline
-            if (shop.tagline.isNotEmpty)
-              Text(
-                shop.tagline,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color:
-                      isDarkMode
-                          ? AppColors.onDarkSurface.withOpacity(0.7)
-                          : AppColors.onSurface.withOpacity(0.7),
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+                  // Action buttons with icons
+                  _buildActionButtons(isDarkMode),
+                ],
               ),
-
-            AppSpacing.gapVerticalSm,
-
-            // Stats row
-            Row(
-              children: [
-                _buildStatItem(
-                  icon: Icons.inventory_2_outlined,
-                  label: '${shop.totalProducts} products',
-                  isDarkMode: isDarkMode,
-                ),
-                const SizedBox(width: AppSpacing.md),
-                _buildStatItem(
-                  icon: Icons.shopping_bag_outlined,
-                  label: '${shop.totalOrders} orders',
-                  isDarkMode: isDarkMode,
-                ),
-                const Spacer(),
-                if (shop.isPremium)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.xs,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.warning.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.diamond_rounded,
-                          color: AppColors.warning,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Premium',
-                          style: AppTextStyles.caption.copyWith(
-                            color: AppColors.warning,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
-
-            AppSpacing.gapVerticalSm,
-
-            // Action buttons
-            Row(
-              children: [
-                Expanded(
-                  child: _buildActionButton(
-                    icon: Icons.inventory_2_outlined,
-                    label: 'Products',
-                    onTap: onViewProducts,
-                    isDarkMode: isDarkMode,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: _buildActionButton(
-                    icon: Icons.campaign_outlined,
-                    label: 'Ads',
-                    onTap: onViewAds,
-                    isDarkMode: isDarkMode,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: _buildActionButton(
-                    icon: Icons.play_circle_outline,
-                    label: 'Videos',
-                    onTap: onViewVideos,
-                    isDarkMode: isDarkMode,
-                  ),
-                ),
-              ],
             ),
           ],
         ),
@@ -248,80 +105,363 @@ class ShopCard extends StatelessWidget {
     );
   }
 
-  Widget _buildShopLogo() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(color: AppColors.surfaceVariant),
-        child:
-            shop.logoUrl.isNotEmpty
-                ? Image.network(
-                  shop.logoUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Icon(
-                      Icons.store_rounded,
+  Widget _buildBannerSection(bool isDarkMode) {
+    return Stack(
+      children: [
+        // Banner image
+        ClipRRect(
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(AppSpacing.radiusLg),
+          ),
+          child: Container(
+            height: 120,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.primary.withOpacity(0.8),
+                  AppColors.secondary.withOpacity(0.6),
+                ],
+              ),
+            ),
+            child:
+                shop.bannerUrl.isNotEmpty
+                    ? Image.network(
+                      shop.bannerUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [AppColors.primary, AppColors.secondary],
+                            ),
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.store_rounded,
+                              color: Colors.white,
+                              size: 40,
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                    : Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [AppColors.primary, AppColors.secondary],
+                        ),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.store_rounded,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+          ),
+        ),
+
+        // Overlay gradient
+        Positioned.fill(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.transparent, Colors.black.withOpacity(0.3)],
+              ),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(AppSpacing.radiusLg),
+              ),
+            ),
+          ),
+        ),
+
+        // Shop logo positioned on banner
+        Positioned(
+          bottom: -30,
+          left: AppSpacing.md,
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDarkMode ? AppColors.darkSurface : Colors.white,
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(AppSpacing.xs),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(color: AppColors.surfaceVariant),
+                child:
+                    shop.logoUrl.isNotEmpty
+                        ? Image.network(
+                          shop.logoUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              Icons.store_rounded,
+                              color: AppColors.primary,
+                              size: 24,
+                            );
+                          },
+                        )
+                        : Icon(
+                          Icons.store_rounded,
+                          color: AppColors.primary,
+                          size: 24,
+                        ),
+              ),
+            ),
+          ),
+        ),
+
+        // Premium badge
+        if (shop.isPremium)
+          Positioned(
+            top: AppSpacing.sm,
+            right: AppSpacing.sm,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xs,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.warning,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.warning.withOpacity(0.3),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.diamond_rounded, color: Colors.white, size: 14),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Premium',
+                    style: AppTextStyles.caption.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildShopHeader(bool isDarkMode) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Shop logo
+        _buildShopLogoHeader(isDarkMode),
+
+        const SizedBox(width: AppSpacing.md),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Shop name and verification
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      shop.name,
+                      style: AppTextStyles.headingSmall.copyWith(
+                        color:
+                            isDarkMode
+                                ? AppColors.onDarkSurface
+                                : AppColors.onSurface,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  if (shop.isVerified) ...[
+                    const SizedBox(width: AppSpacing.xs),
+                    Icon(
+                      Icons.verified_rounded,
                       color: AppColors.primary,
-                      size: 24,
-                    );
-                  },
-                )
-                : Icon(Icons.store_rounded, color: AppColors.primary, size: 24),
-      ),
+                      size: 20,
+                    ),
+                  ],
+                ],
+              ),
+
+              AppSpacing.gapVerticalXs,
+
+              // Category and distance
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                    ),
+                    child: Text(
+                      shop.categoryText,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Icon(
+                    Icons.location_on_rounded,
+                    color:
+                        isDarkMode
+                            ? AppColors.onDarkSurface.withOpacity(0.6)
+                            : AppColors.onSurface.withOpacity(0.6),
+                    size: 16,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${shop.distanceFromUser.toStringAsFixed(1)} km',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color:
+                          isDarkMode
+                              ? AppColors.onDarkSurface.withOpacity(0.6)
+                              : AppColors.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        // Rating
+        _buildRating(isDarkMode),
+      ],
     );
   }
 
   Widget _buildRating(bool isDarkMode) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.star_rounded, color: AppColors.warning, size: 16),
-            const SizedBox(width: 4),
-            Text(
-              shop.rating.averageRating.toStringAsFixed(1),
-              style: AppTextStyles.bodySmall.copyWith(
-                color:
-                    isDarkMode ? AppColors.onDarkSurface : AppColors.onSurface,
-                fontWeight: FontWeight.w600,
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color:
+            isDarkMode
+                ? AppColors.darkSurfaceVariant
+                : AppColors.surfaceVariant,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.star_rounded, color: AppColors.warning, size: 16),
+              const SizedBox(width: 4),
+              Text(
+                shop.rating.averageRating.toStringAsFixed(1),
+                style: AppTextStyles.bodySmall.copyWith(
+                  color:
+                      isDarkMode
+                          ? AppColors.onDarkSurface
+                          : AppColors.onSurface,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          ],
-        ),
-        Text(
-          '(${shop.rating.totalReviews})',
-          style: AppTextStyles.caption.copyWith(
-            color:
-                isDarkMode
-                    ? AppColors.onDarkSurface.withOpacity(0.6)
-                    : AppColors.onSurface.withOpacity(0.6),
+            ],
           ),
+          Text(
+            '(${shop.rating.totalReviews})',
+            style: AppTextStyles.caption.copyWith(
+              color:
+                  isDarkMode
+                      ? AppColors.onDarkSurface.withOpacity(0.6)
+                      : AppColors.onSurface.withOpacity(0.6),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatsRow(bool isDarkMode) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildCompactStat(
+          icon: Icons.inventory_2_outlined,
+          value: '${shop.totalProducts}',
+          label: 'Products',
+          isDarkMode: isDarkMode,
+        ),
+        _buildCompactStat(
+          icon: Icons.shopping_bag_outlined,
+          value: '${shop.totalOrders}',
+          label: 'Orders',
+          isDarkMode: isDarkMode,
+        ),
+        _buildCompactStat(
+          icon: Icons.campaign_outlined,
+          value: '${shop.advertisements.length}',
+          label: 'Ads',
+          isDarkMode: isDarkMode,
+        ),
+        _buildCompactStat(
+          icon: Icons.play_circle_outline,
+          value: '${shop.videos.length}',
+          label: 'Videos',
+          isDarkMode: isDarkMode,
         ),
       ],
     );
   }
 
-  Widget _buildStatItem({
+  Widget _buildCompactStat({
     required IconData icon,
+    required String value,
     required String label,
     required bool isDarkMode,
   }) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    return Column(
       children: [
-        Icon(
-          icon,
-          color:
-              isDarkMode
-                  ? AppColors.onDarkSurface.withOpacity(0.6)
-                  : AppColors.onSurface.withOpacity(0.6),
-          size: 14,
+        Icon(icon, color: AppColors.primary, size: 16),
+        const SizedBox(height: 2),
+        Text(
+          value,
+          style: AppTextStyles.bodySmall.copyWith(
+            color: isDarkMode ? AppColors.onDarkSurface : AppColors.onSurface,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        const SizedBox(width: 4),
         Text(
           label,
           style: AppTextStyles.caption.copyWith(
@@ -329,55 +469,100 @@ class ShopCard extends StatelessWidget {
                 isDarkMode
                     ? AppColors.onDarkSurface.withOpacity(0.6)
                     : AppColors.onSurface.withOpacity(0.6),
+            fontSize: 10,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildActionButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback? onTap,
-    required bool isDarkMode,
-  }) {
+  Widget _buildActionButtons(bool isDarkMode) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        width: double.infinity,
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm,
-          vertical: AppSpacing.xs,
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color:
-              isDarkMode
-                  ? AppColors.darkSurfaceVariant
-                  : AppColors.surfaceVariant,
+          color: AppColors.primary,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(
-            color: isDarkMode ? AppColors.outline : AppColors.outlineVariant,
-            width: 1,
-          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 14,
-              color: isDarkMode ? AppColors.onDarkSurface : AppColors.onSurface,
-            ),
-            const SizedBox(width: 4),
+            Icon(Icons.store_rounded, color: Colors.white, size: 20),
+            const SizedBox(width: AppSpacing.sm),
             Text(
-              label,
-              style: AppTextStyles.caption.copyWith(
-                color:
-                    isDarkMode ? AppColors.onDarkSurface : AppColors.onSurface,
-                fontWeight: FontWeight.w500,
+              'Welcome to Shop',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildShopLogoHeader(bool isDarkMode) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        child:
+            shop.logoUrl.isNotEmpty
+                ? Image.network(
+                  shop.logoUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusLg,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.store_rounded,
+                        color: AppColors.primary,
+                        size: 24,
+                      ),
+                    );
+                  },
+                )
+                : Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                  ),
+                  child: Icon(
+                    Icons.store_rounded,
+                    color: AppColors.primary,
+                    size: 24,
+                  ),
+                ),
       ),
     );
   }

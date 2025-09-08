@@ -133,8 +133,6 @@ class _CategoryScreenState extends State<CategoryScreen>
               children: [
                 // Search and filter section
                 _buildSearchSection(isDarkMode),
-                // Tab bar
-                _buildTabBar(isDarkMode),
                 // Content with bottom padding for floating nav bar
                 Expanded(
                   child:
@@ -200,6 +198,13 @@ class _CategoryScreenState extends State<CategoryScreen>
           },
         ),
       ],
+      bottom: TabBar(
+        controller: _tabController,
+        indicatorColor: Colors.white,
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.white.withOpacity(0.7),
+        tabs: const [Tab(text: 'All'), Tab(text: 'Popular'), Tab(text: 'New')],
+      ),
     );
   }
 
@@ -368,44 +373,6 @@ class _CategoryScreenState extends State<CategoryScreen>
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  /// Build tab bar
-  Widget _buildTabBar(bool isDarkMode) {
-    return Container(
-      margin: AppSpacing.screenPaddingMd,
-      decoration: BoxDecoration(
-        color: isDarkMode ? AppColors.darkSurface : Colors.white,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        boxShadow: [
-          BoxShadow(
-            color:
-                isDarkMode
-                    ? Colors.black.withOpacity(0.1)
-                    : Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TabBar(
-        controller: _tabController,
-        indicator: const BoxDecoration(),
-        indicatorSize: TabBarIndicatorSize.label,
-        labelColor: AppColors.primary,
-        unselectedLabelColor:
-            isDarkMode
-                ? AppColors.onDarkSurface.withOpacity(0.6)
-                : AppColors.onSurface.withOpacity(0.6),
-        labelStyle: AppTextStyles.bodyMedium.copyWith(
-          fontWeight: FontWeight.w600,
-        ),
-        unselectedLabelStyle: AppTextStyles.bodyMedium.copyWith(
-          fontWeight: FontWeight.w500,
-        ),
-        tabs: const [Tab(text: 'All'), Tab(text: 'Popular'), Tab(text: 'New')],
       ),
     );
   }

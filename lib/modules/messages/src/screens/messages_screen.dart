@@ -27,7 +27,7 @@ class _MessagesScreenState extends State<MessagesScreen>
   List<OrderTracking> _orderTracking = [];
   String _searchQuery = '';
   bool _isLoading = true;
-  int _currentBottomNavIndex = 2; // Messages tab
+  int _currentBottomNavIndex = 3; // Messages tab
 
   @override
   void initState() {
