@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../shared/theme/index.dart';
 import '../../../../shared/utilities/bottom_navigation_service.dart';
 import '../../../sliver_appbar/src/sliver_appbar_module.dart';
@@ -7,6 +8,7 @@ import '../services/message_service.dart';
 import '../components/conversation_card.dart';
 import '../components/order_tracking_card.dart';
 import '../components/delivery_map_modal.dart';
+import 'chat_screen.dart';
 
 /// Messages screen for customer-vendor communication and delivery tracking
 class MessagesScreen extends StatefulWidget {
@@ -96,14 +98,10 @@ class _MessagesScreenState extends State<MessagesScreen>
     // Mark as read
     _messageService.markConversationAsRead(conversation.id);
 
-    // Navigate to chat screen (placeholder for now)
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Opening conversation with ${conversation.title}'),
-        backgroundColor: AppColors.primary,
-        duration: const Duration(seconds: 1),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+    // Navigate to chat screen
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ChatScreen(conversation: conversation),
       ),
     );
   }
@@ -199,23 +197,20 @@ class _MessagesScreenState extends State<MessagesScreen>
       ),
       actions: [
         // Unread count badge
-        if (_messageService.totalUnreadCount > 0)
-          Container(
-            margin: const EdgeInsets.only(right: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              '${_messageService.totalUnreadCount}',
-              style: const TextStyle(
+        //theme toggle
+        Consumer<ThemeManager>(
+          builder: (context, themeManager, _) {
+            return IconButton(
+              icon: Icon(
+                themeManager.isDarkMode ? Icons.light_mode : Icons.dark_mode,
                 color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
               ),
-            ),
-          ),
+              onPressed: () {
+                themeManager.toggleTheme();
+              },
+            );
+          },
+        ),
       ],
       bottom: TabBar(
         controller: _tabController,
@@ -264,41 +259,167 @@ class _MessagesScreenState extends State<MessagesScreen>
   Widget _buildSearchSection(bool isDarkMode) {
     return Container(
       padding: AppSpacing.screenPaddingMd,
-      child: TextField(
-        controller: _searchController,
-        onChanged: _onSearchChanged,
-        decoration: InputDecoration(
-          hintText: 'Search conversations...',
-          prefixIcon: const Icon(Icons.search, color: AppColors.primary),
-          suffixIcon:
-              _searchQuery.isNotEmpty
-                  ? IconButton(
-                    icon: const Icon(Icons.clear, color: AppColors.primary),
-                    onPressed: () {
+      child: Column(
+        children: [
+          // Professional search bar with modern design (matching shops screen style)
+          Container(
+            height: 48,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors:
+                    isDarkMode
+                        ? [
+                          AppColors.darkSurface,
+                          AppColors.darkSurface.withOpacity(0.8),
+                        ]
+                        : [Colors.white, Colors.grey[50]!],
+              ),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: AppColors.primary.withOpacity(0.2),
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+                BoxShadow(
+                  color:
+                      isDarkMode
+                          ? Colors.black.withOpacity(0.3)
+                          : Colors.black.withOpacity(0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                const SizedBox(width: 16),
+                // Search icon with background
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.primary.withOpacity(0.1),
+                        AppColors.primary.withOpacity(0.05),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(
+                    Icons.search_rounded,
+                    color: AppColors.primary,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Search input area
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      // Focus on search field
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Search conversations',
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color:
+                                isDarkMode
+                                    ? AppColors.onDarkSurface
+                                    : Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          'Find your messages and conversations',
+                          style: AppTextStyles.caption.copyWith(
+                            color:
+                                isDarkMode
+                                    ? AppColors.onDarkSurface.withOpacity(0.7)
+                                    : Colors.grey[400],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Voice search button
+                Container(
+                  width: 1,
+                  height: 24,
+                  color:
+                      isDarkMode
+                          ? AppColors.onDarkSurface.withOpacity(0.3)
+                          : Colors.grey[300],
+                ),
+                GestureDetector(
+                  onTap: () {
+                    // Handle voice search
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Voice search coming soon!'),
+                        duration: Duration(seconds: 1),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Icon(
+                        Icons.mic_rounded,
+                        color: AppColors.primary,
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Clear search button (when there's text)
+                if (_searchQuery.isNotEmpty)
+                  GestureDetector(
+                    onTap: () {
                       _searchController.clear();
                       _onSearchChanged('');
                     },
-                  )
-                  : null,
-          filled: true,
-          fillColor: isDarkMode ? AppColors.darkSurface : Colors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-            borderSide: BorderSide(
-              color: isDarkMode ? AppColors.outlineVariant : AppColors.outline,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Icon(
+                          Icons.clear_rounded,
+                          color: AppColors.primary,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                const SizedBox(width: 8),
+              ],
             ),
           ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-            borderSide: BorderSide(
-              color: isDarkMode ? AppColors.outlineVariant : AppColors.outline,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-            borderSide: const BorderSide(color: AppColors.primary, width: 2),
-          ),
-        ),
+        ],
       ),
     );
   }
